@@ -18,21 +18,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Bun (or Node.js)
-        # Using bun since we saw bun.lockb in your project directory
-        uses: oven-sh/setup-bun@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: '22'
 
       - name: Install dependencies
-        run: bun install
+        run: npm ci
 
       - name: Build the project
         env: 
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-
-            
-        run: bun run build
+        run: npm run build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
