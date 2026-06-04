@@ -1,7 +1,7 @@
 import { courses, quizzes } from "@/data/courses";
 import type { Course, Quiz, Module, Lesson } from "@/types";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:9000";
 
 const delay = (ms = 500) => new Promise((r) => setTimeout(r, ms));
 
