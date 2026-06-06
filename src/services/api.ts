@@ -5,6 +5,20 @@ const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:9000";
 
 const delay = (ms = 500) => new Promise((r) => setTimeout(r, ms));
 
+const getToken = () => {
+  try {
+    const auth = JSON.parse(localStorage.getItem("lms-auth") || "{}");
+    return auth?.state?.token ?? localStorage.getItem("lms_token");
+  } catch {
+    return localStorage.getItem("lms_token");
+  }
+};
+
+const authHeaders = () => {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 // Map backend lesson → frontend Lesson
 const mapLesson = (l: any): Lesson => ({
   id: l.id,
@@ -15,6 +29,7 @@ const mapLesson = (l: any): Lesson => ({
   videoUrl: l.videoUrl || "",
   order: l.order,
   type: l.type === "video" ? "video" : "reading",
+  locked: Boolean(l.locked),
 });
 
 // Map backend module → frontend Module
@@ -67,7 +82,7 @@ const mapBackendCourse = (c: any): Course => ({
     "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop",
   instructor: {
     id: c.instructor?.id ?? c.createdBy ?? "instructor",
-    name: c.instructor?.name ?? "Ternkonnect  Instructor",
+    name: c.instructor?.name ?? "DWSAcademy  Instructor",
     title: c.instructor?.title ?? "",
     bio: c.instructor?.bio ?? "",
     avatar:
@@ -86,6 +101,10 @@ const mapBackendCourse = (c: any): Course => ({
   modules: (c.modules ?? []).map(mapModule),
   reviews: [],
   isFeatured: c.status === "published",
+  pricingType: c.pricingType ?? "free",
+  price: Number(c.price || 0),
+  currency: c.currency ?? "NGN",
+  hasAccess: Boolean(c.hasAccess),
 });
 
 // Map backend quiz → frontend Quiz
@@ -107,7 +126,9 @@ export const api = {
   // Fetch all courses from backend, fall back to mock
   getCourses: async (): Promise<Course[]> => {
     try {
-      const res = await fetch(`${API_URL}/api/courses`);
+      const res = await fetch(`${API_URL}/api/courses`, {
+        headers: authHeaders(),
+      });
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
       const backendCourses = data.map(mapBackendCourse);
@@ -126,7 +147,9 @@ export const api = {
 
     // Fetch from backend — GET /api/courses/:id returns full structure
     try {
-      const res = await fetch(`${API_URL}/api/courses/${id}`);
+      const res = await fetch(`${API_URL}/api/courses/${id}`, {
+        headers: authHeaders(),
+      });
       if (!res.ok) return undefined;
       const data = await res.json();
       return mapBackendCourse(data);
@@ -142,16 +165,16 @@ export const api = {
     rating: number,
     comment: string,
   ): Promise<void> => {
-    const auth = JSON.parse(localStorage.getItem("lms-auth") || "{}");
-    const token = auth?.state?.token;
-    await fetch(`${API_URL}/api/reviews/${courseId}`, {
+    const res = await fetch(`${API_URL}/api/reviews/${courseId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...authHeaders(),
       },
       body: JSON.stringify({ rating, comment }),
     });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Failed to submit review");
   },
 
   getCourseReviews: async (courseId: string) => {
@@ -162,6 +185,39 @@ export const api = {
     } catch {
       return { avgRating: 0, totalReviews: 0, reviews: [] };
     }
+  },
+
+  initializePayment: async (courseId: string) => {
+    const res = await fetch(`${API_URL}/api/payments/initialize`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeaders(),
+      },
+      body: JSON.stringify({ courseId }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Failed to start payment");
+    return data as {
+      reference: string;
+      authorizationUrl: string;
+      amount: number;
+      currency: string;
+    };
+  },
+
+  verifyPayment: async (reference: string) => {
+    const res = await fetch(`${API_URL}/api/payments/verify/${reference}`, {
+      headers: authHeaders(),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const err: any = new Error(data.error || "Payment was not successful");
+      err.courseId = data.courseId;
+      err.courseTitle = data.courseTitle;
+      throw err;
+    }
+    return data as { status: string; courseId: string; courseTitle?: string };
   },
 
   getInstructorProfile: async (adminId: string) => {
@@ -230,123 +286,4 @@ export const api = {
   },
 };
 
-// export const api = {
-//   getCourses: async (): Promise<Course[]> => {
-//     try {
-//       const res = await fetch(`${API_URL}/api/courses`);
-//       if (!res.ok) throw new Error("Failed");
-//       const data = await res.json();
-//       const backendCourses = data.map(mapBackendCourse);
-//       return [...backendCourses, ...courses];
-//     } catch {
-//       await delay(300);
-//       return courses;
-//     }
-//   },
 
-//   getCourseById: async (id: string): Promise<Course | undefined> => {
-//     const mock = courses.find((c) => c.id === id);
-//     if (mock) return mock;
-//     try {
-//       const res = await fetch(`${API_URL}/api/courses/${id}`);
-//       if (!res.ok) return undefined;
-//       const data = await res.json();
-//       return mapBackendCourse(data);
-//     } catch {
-//       return undefined;
-//     }
-//   },
-
-//   submitReview: async (
-//     courseId: string,
-//     rating: number,
-//     comment: string,
-//   ): Promise<void> => {
-//     const auth = JSON.parse(localStorage.getItem("lms-auth") || "{}");
-//     const token = auth?.state?.token;
-//     await fetch(`${API_URL}/api/reviews/${courseId}`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify({ rating, comment }),
-//     });
-//   },
-
-//   getCourseReviews: async (courseId: string) => {
-//     try {
-//       const res = await fetch(`${API_URL}/api/reviews/${courseId}`);
-//       if (!res.ok) return { avgRating: 0, totalReviews: 0, reviews: [] };
-//       return res.json();
-//     } catch {
-//       return { avgRating: 0, totalReviews: 0, reviews: [] };
-//     }
-//   },
-
-//   getInstructorProfile: async (adminId: string) => {
-//     try {
-//       const res = await fetch(`${API_URL}/api/profile/${adminId}`);
-//       if (!res.ok) return null;
-//       return res.json();
-//     } catch {
-//       return null;
-//     }
-//   },
-
-//   searchCourses: async (
-//     query: string,
-//     category?: string,
-//   ): Promise<Course[]> => {
-//     const all = await api.getCourses();
-//     let filtered = all;
-//     if (query) {
-//       const q = query.toLowerCase();
-//       filtered = filtered.filter(
-//         (c) =>
-//           c.title.toLowerCase().includes(q) ||
-//           c.shortDescription.toLowerCase().includes(q) ||
-//           c.instructor.name.toLowerCase().includes(q),
-//       );
-//     }
-//     if (category) filtered = filtered.filter((c) => c.category === category);
-//     return filtered;
-//   },
-
-//   getFeaturedCourses: async (): Promise<Course[]> => {
-//     const all = await api.getCourses();
-//     return all.filter((c) => c.isFeatured);
-//   },
-
-//   getQuiz: async (quizId: string): Promise<Quiz | undefined> => {
-//     const mock = quizzes.find((q) => q.id === quizId);
-//     if (mock) return mock;
-//     try {
-//       const res = await fetch(`${API_URL}/api/courses`);
-//       if (!res.ok) return undefined;
-//       const allCourses = await res.json();
-//       for (const course of allCourses) {
-//         const courseRes = await fetch(`${API_URL}/api/courses/${course.id}`);
-//         if (!courseRes.ok) continue;
-//         const courseData = await courseRes.json();
-//         for (const mod of courseData.modules ?? []) {
-//           if (mod.quiz?.id === quizId) return mapQuiz(mod.quiz, courseData.id);
-//         }
-//       }
-//       return undefined;
-//     } catch {
-//       return undefined;
-//     }
-//   },
-// };
-
-// ... (keep everything up to and including the first api object's closing `};`)
-
-export const getCourses = api.getCourses;
-export const getCourseById = api.getCourseById;
-export const searchCourses = api.searchCourses;
-export const getFeaturedCourses = api.getFeaturedCourses;
-export const getQuiz = api.getQuiz;
-export const submitReview = api.submitReview;
-export const getCourseReviews = api.getCourseReviews;
-export const getInstructorProfile = api.getInstructorProfile;

@@ -60,61 +60,6 @@ const Signup = () => {
       .replace(/\s+dot\s+/g, ".")
       .replace(/\s/g, "");
 
-  // useVoiceCommands(
-  //   [
-  //     {
-  //       command: /.+/,
-  //       action: (match) => {
-  //         const transcript = match?.[0] ?? "";
-  //         if (flowStep.current === "signup-name") {
-  //           setName(transcript);
-  //           collectedRef.current.name = transcript;
-  //           flowStep.current = "signup-email";
-  //           localStorage.setItem("voice_flow_step", "signup-email");
-  //           speak(
-  //             `Got it. Your name is ${transcript}. Now please say your email address.`,
-  //           );
-  //         } else if (flowStep.current === "signup-email") {
-  //           const normalized = normalizeEmail(transcript);
-  //           if (!isEmail(normalized)) {
-  //             speak(
-  //               "That does not look like a valid email address. Please say your email address again.",
-  //             );
-  //             return;
-  //           }
-  //           setEmail(normalized);
-  //           collectedRef.current.email = normalized;
-  //           flowStep.current = "signup-password";
-  //           localStorage.setItem("voice_flow_step", "signup-password");
-  //           speak(
-  //             `Got it. Your email is ${normalized}. Now please say your password.`,
-  //           );
-  //         } else if (flowStep.current === "signup-password") {
-  //           const pwd = transcript.replace(/\s/g, "");
-  //           setPassword(pwd);
-  //           flowStep.current = "idle";
-  //           localStorage.removeItem("voice_flow_step");
-  //           speak("Password received. Creating your account now.");
-  //           setTimeout(async () => {
-  //             try {
-  //               await signup(
-  //                 collectedRef.current.name,
-  //                 collectedRef.current.email,
-  //                 pwd,
-  //               );
-  //               speak("Your account has been created. Welcome to Ternkonnect!");
-  //               navigate("/");
-  //             } catch {
-  //               speak("Sign up failed. Please try again.");
-  //             }
-  //           }, 1000);
-  //         }
-  //       },
-  //     },
-  //   ],
-  //   voiceActive,
-  // );
-
   useVoiceCommands(
     [
       // Navigation — always active
@@ -274,6 +219,44 @@ const Signup = () => {
     voiceActive,
   );
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!name || !email || !password) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Please fill in all fields.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+  //   if (password.length < 6) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Password must be at least 6 characters.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     await signup(name, email, password);
+  //     toast({
+  //       title: "Account created!",
+  //       description: "Welcome to Ternkonnect.",
+  //     });
+  //     navigate("/");
+  //   } catch (err: any) {
+  //     toast({
+  //       title: "Error",
+  //       description: err.message || "Signup failed.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !password) {
@@ -294,12 +277,12 @@ const Signup = () => {
     }
     setLoading(true);
     try {
-      await signup(name, email, password);
+      const message = await signup(name, email, password);
       toast({
-        title: "Account created!",
-        description: "Welcome to Ternkonnect.",
+        title: "Check your email",
+        description: message,
       });
-      navigate("/");
+      navigate("/login");
     } catch (err: any) {
       toast({
         title: "Error",
@@ -310,14 +293,15 @@ const Signup = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 gradient-hero">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center">
-              <BookOpen className="h-6 w-6 text-white" />
+              <Link to="/">
+                <BookOpen className="h-6 w-6 text-white" />
+              </Link>
             </div>
           </div>
           <CardTitle className="text-2xl">Create Account</CardTitle>
