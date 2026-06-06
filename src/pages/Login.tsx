@@ -56,96 +56,6 @@ const Login = () => {
       .replace(/\s+dot\s+/g, ".")
       .replace(/\s/g, "");
 
-  // useVoiceCommands(
-  //   [
-  //     {
-  //       command: /.+/,
-  //       action: (match) => {
-  //         const transcript = match?.[0] ?? "";
-  //         if (flowStep.current === "login-email") {
-  //           const normalized = normalizeEmail(transcript);
-  //           if (!isEmail(normalized)) {
-  //             speak(
-  //               "That does not look like a valid email address. Please say your email address again.",
-  //             );
-  //             return;
-  //           }
-  //           setEmail(normalized);
-  //           flowStep.current = "login-password";
-  //           localStorage.setItem("voice_flow_step", "login-password");
-  //           speak(
-  //             `Got it. Your email is ${normalized}. Now please say your password.`,
-  //           );
-  //         } else if (flowStep.current === "login-password") {
-  //           const pwd = transcript.replace(/\s/g, "");
-  //           setPassword(pwd);
-  //           flowStep.current = "idle";
-  //           localStorage.removeItem("voice_flow_step");
-  //           speak("Password received. Logging you in now.");
-  //           setTimeout(async () => {
-  //             try {
-  //               await login(normalized_email_ref.current, pwd);
-  //               speak("Welcome back! You are now logged in.");
-  //               navigate("/");
-  //             } catch {
-  //               speak(
-  //                 "Login failed. Please check your credentials and try again.",
-  //               );
-  //             }
-  //           }, 1000);
-  //         }
-  //       },
-  //     },
-  //   ],
-  //   voiceActive,
-  // );
-
-  // useVoiceCommands(
-  //   [
-  //     {
-  //       command: /.+/,
-  //       action: (match) => {
-  //         const transcript = match?.[0] ?? "";
-  //         if (flowStep.current === "login-email") {
-  //           const normalized = normalizeEmail(transcript);
-  //           if (!isEmail(normalized)) {
-  //             speak(
-  //               "That does not look like a valid email address. Please say your email address again.",
-  //             );
-  //             return;
-  //           }
-  //           normalized_email_ref.current = normalized;
-  //           setEmail(normalized);
-  //           flowStep.current = "login-password";
-  //           localStorage.setItem("voice_flow_step", "login-password");
-  //           speak(
-  //             `Got it. Your email is ${normalized}. Now please say your password.`,
-  //           );
-  //         } else if (flowStep.current === "login-password") {
-  //           const pwd = transcript.replace(/\s/g, "");
-  //           setPassword(pwd);
-  //           flowStep.current = "idle";
-  //           localStorage.removeItem("voice_flow_step");
-  //           speak("Password received. Logging you in now.");
-  //           setTimeout(async () => {
-  //             try {
-  //               await login(normalized_email_ref.current, pwd);
-  //               speak("Welcome back! You are now logged in.");
-  //               localStorage.setItem("voice_flow_step", "ask-course");
-  //               navigate("/");
-  //             } catch {
-  //               speak(
-  //                 "Login failed. Please check your credentials and try again.",
-  //               );
-  //             }
-  //           }, 1000);
-  //         }
-  //       },
-  //     },
-  //   ],
-  //   voiceActive,
-  // );
-
   useVoiceCommands(
     [
       // Navigation commands — always active
@@ -283,12 +193,16 @@ const Login = () => {
     }
     setLoading(true);
     try {
-      await login(email, password);
+      const user = await login(email, password);
       toast({
         title: "Welcome back!",
         description: "You have been logged in successfully.",
       });
-      navigate("/");
+      if (user.role === "admin" || user.role === "super-admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       toast({
         title: "Error",
@@ -299,14 +213,16 @@ const Login = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 gradient-hero">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center">
-              <BookOpen className="h-6 w-6 text-white" />
+              <Link to="/">
+                <BookOpen className="h-6 w-6 text-white" />
+              </Link>
+
             </div>
           </div>
           <CardTitle className="text-2xl">Welcome Back</CardTitle>

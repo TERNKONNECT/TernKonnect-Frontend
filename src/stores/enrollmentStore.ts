@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { EnrolledCourse, QuizAttempt } from "@/types";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:9000";
 
 const getToken = () => {
   try {
@@ -38,6 +38,7 @@ interface EnrollmentState {
   userId: string | null;
   enrolledCourses: EnrolledCourse[];
   initForUser: (userId: string) => void;
+  refreshFromServer: () => Promise<void>;
   clearEnrollments: () => void;
   enroll: (courseId: string) => Promise<void>;
   isEnrolled: (courseId: string) => boolean;
@@ -60,6 +61,40 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
   initForUser: (userId: string) => {
     const courses = loadFromStorage(userId);
     set({ userId, enrolledCourses: courses });
+    get().refreshFromServer();
+  },
+
+  refreshFromServer: async () => {
+    const uid = get().userId;
+    if (!uid || !getToken()) return;
+    try {
+      const res = await fetch(`${API_URL}/api/enrollments/my`, {
+        headers: authHeaders(),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const serverCourses: EnrolledCourse[] = data.map((item: any) => ({
+        courseId: item.course?.id ?? item.Course?.id ?? item.courseId,
+        enrolledAt: item.enrolledAt,
+        completedLessons: item.completedLessonIds ?? [],
+        completedModules: [],
+        quizAttempts: [],
+        isCompleted: Boolean(item.isCompleted),
+        completedAt: item.completedAt,
+      }));
+      const existing = get().enrolledCourses;
+      const merged = serverCourses.map((serverCourse) => {
+        const local = existing.find((c) => c.courseId === serverCourse.courseId);
+        return {
+          ...serverCourse,
+          completedLessons: local?.completedLessons ?? serverCourse.completedLessons,
+          completedModules: local?.completedModules ?? [],
+          quizAttempts: local?.quizAttempts ?? [],
+        };
+      });
+      set({ enrolledCourses: merged });
+      saveToStorage(uid, merged);
+    } catch {}
   },
 
   // Call this on logout

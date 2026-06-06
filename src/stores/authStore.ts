@@ -2,14 +2,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User } from "@/types";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:9000";
 
 interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (name: string, email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<User>;
+  signup: (name: string, email: string, password: string) => Promise<string>;
   logout: () => void;
 }
 
@@ -34,17 +34,23 @@ export const useAuthStore = create<AuthState>()(
           id: data.user._id ?? data.user.id,
           name: data.user.name,
           email: data.user.email,
+          role: data.user.role ?? "user",
           avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${data.user.name}`,
           joinedAt: data.user.createdAt,
         };
 
+        // store token in both keys so admin api (axios) and learnflow both work
+        localStorage.setItem("lms_token", data.token);
+        localStorage.setItem("lms_user", JSON.stringify(user));
+
         set({ user, token: data.token, isAuthenticated: true });
 
-        // Load THIS user's enrollment data immediately after login
-        const { useEnrollmentStore } = await import("./enrollmentStore");
-        useEnrollmentStore.getState().initForUser(user.id);
+        if (user.role === "user") {
+          const { useEnrollmentStore } = await import("./enrollmentStore");
+          useEnrollmentStore.getState().initForUser(user.id);
+        }
 
-        return true;
+        return user;
       },
 
       signup: async (name: string, email: string, password: string) => {
@@ -57,29 +63,15 @@ export const useAuthStore = create<AuthState>()(
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Signup failed");
 
-        const user: User = {
-          id: data.user._id ?? data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${data.user.name}`,
-          joinedAt: data.user.createdAt,
-        };
-
-        set({ user, token: data.token, isAuthenticated: true });
-
-        // New user — initialize with empty enrollments
-        const { useEnrollmentStore } = await import("./enrollmentStore");
-        useEnrollmentStore.getState().initForUser(user.id);
-
-        return true;
+        return data.message || "Check your email to verify your account.";
       },
 
       logout: () => {
-        // Clear enrollment state on logout
+        localStorage.removeItem("lms_token");
+        localStorage.removeItem("lms_user");
         import("./enrollmentStore").then(({ useEnrollmentStore }) => {
           useEnrollmentStore.getState().clearEnrollments();
         });
-
         set({ user: null, token: null, isAuthenticated: false });
       },
     }),

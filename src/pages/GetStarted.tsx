@@ -1,16 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowLeft, BookOpen, Check, Loader2 } from "lucide-react";
-import emailjs from "@emailjs/browser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const EMAILJS_SERVICE_ID = "service_whpb5nk";
-const EMAILJS_TEMPLATE_ID = "template_ievh3os";
-const EMAILJS_PUBLIC_KEY = "uE2eanzlj-GmJ2UKf";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
+const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:9000";
 
 const steps = [
   {
@@ -31,49 +26,6 @@ const trustedBrands = [
   "Centrum",
   "ThermoFisher",
 ];
-
-// const plans = [
-//   {
-//     id: "trial",
-//     label: "7-Day Free Trial",
-//     badge: "Free",
-//     badgeColor: "bg-green-500",
-//     price: 0,
-//     period: "/7 days",
-//     billing: "No credit card required",
-//     discount: "Full access for 7 days, cancel anytime.",
-//   },
-//   {
-//     id: "monthly",
-//     label: "Monthly Subscription",
-//     badge: null,
-//     badgeColor: "",
-//     price: 49,
-//     period: "/month",
-//     billing: "Billed monthly at $49",
-//     discount: "",
-//   },
-//   {
-//     id: "annual",
-//     label: "Annual Subscription",
-//     badge: "Popular",
-//     badgeColor: "bg-primary",
-//     price: 41,
-//     period: "/month",
-//     billing: "Billed as one payment of $490",
-//     discount: "16% off the monthly subscription!",
-//   },
-//   {
-//     id: "biennial",
-//     label: "2-Year Subscription",
-//     badge: "Best value",
-//     badgeColor: "bg-purple-500",
-//     price: 38,
-//     period: "/month",
-//     billing: "Billed as one payment of $901.6",
-//     discount: "23% off the monthly subscription!",
-//   },
-// ];
 
 const plans = [
   {
@@ -144,28 +96,10 @@ export default function GetStarted() {
     setStep(2);
   };
 
-  const sendTrialEmail = async () => {
-    try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        {
-          user_name: form.name,
-          user_email: form.email,
-          user_website: form.website,
-        },
-        EMAILJS_PUBLIC_KEY,
-      );
-    } catch (err) {
-      throw err;
-    }
-  };
-
   const handleStep2Submit = async () => {
     setSending(true);
     setEmailError("");
     try {
-      // Save to database for all plans
       const res = await fetch(`${API_URL}/api/get-started`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -177,11 +111,6 @@ export default function GetStarted() {
         }),
       });
       if (!res.ok) throw new Error("Failed to save signup");
-
-      // Send confirmation email for trial plan
-      if (selectedPlan === "trial") {
-        await sendTrialEmail();
-      }
 
       setSubmitted(true);
     } catch (err) {
@@ -207,11 +136,10 @@ export default function GetStarted() {
             <div key={i} className="flex gap-4 items-start">
               <div className="flex flex-col items-center">
                 <div
-                  className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 transition-all ${
-                    isCompleted || isActive
-                      ? "gradient-primary text-white"
-                      : "border-2 border-muted-foreground/30 text-muted-foreground"
-                  }`}
+                  className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 transition-all ${isCompleted || isActive
+                    ? "gradient-primary text-white"
+                    : "border-2 border-muted-foreground/30 text-muted-foreground"
+                    }`}
                 >
                   {isCompleted ? <Check className="h-4 w-4" /> : i + 1}
                 </div>
@@ -443,11 +371,10 @@ export default function GetStarted() {
                     <button
                       key={plan.id}
                       onClick={() => setSelectedPlan(plan.id)}
-                      className={`w-full text-left rounded-xl border-2 p-4 transition-all relative ${
-                        isSelected
-                          ? "border-primary bg-primary/5"
-                          : "border-border bg-background hover:border-primary/40"
-                      }`}
+                      className={`w-full text-left rounded-xl border-2 p-4 transition-all relative ${isSelected
+                        ? "border-primary bg-primary/5"
+                        : "border-border bg-background hover:border-primary/40"
+                        }`}
                     >
                       {plan.badge && (
                         <span
@@ -459,11 +386,10 @@ export default function GetStarted() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div
-                            className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                              isSelected
-                                ? "border-primary"
-                                : "border-muted-foreground/40"
-                            }`}
+                            className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${isSelected
+                              ? "border-primary"
+                              : "border-muted-foreground/40"
+                              }`}
                           >
                             {isSelected && (
                               <div className="h-2.5 w-2.5 rounded-full bg-primary" />
