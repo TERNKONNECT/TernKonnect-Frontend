@@ -24,6 +24,9 @@ import Contact from "./pages/Contact";
 import GetStarted from "./pages/GetStarted";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { AIChat } from "./components/AIChat";
+import { AdminLayout } from "./components/layout/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import Instructors from "./pages/admin/Instructors";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +88,10 @@ const App = () => (
               </ProtectedRoute>
             }
           />
+          <Route path="/dashboard" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="instructors" element={<Instructors />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
         {/* <AIChat /> */}

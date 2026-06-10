@@ -69,12 +69,6 @@ const features = [
   },
 ];
 
-const stats = [
-  { value: "1,000+", label: "Learners Impacted" },
-  { value: "91%", label: "Content Lacks Accessibility" },
-  { value: "3+", label: "Integration Methods" },
-];
-
 export default function About() {
   return (
     <MainLayout>

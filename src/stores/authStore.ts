@@ -36,6 +36,7 @@ export const useAuthStore = create<AuthState>()(
           email: data.user.email,
           avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${data.user.name}`,
           joinedAt: data.user.createdAt,
+          role: data.user.role || "user",
         };
 
         set({ user, token: data.token, isAuthenticated: true });
@@ -63,6 +64,7 @@ export const useAuthStore = create<AuthState>()(
           email: data.user.email,
           avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${data.user.name}`,
           joinedAt: data.user.createdAt,
+          role: data.user.role || "user",
         };
 
         set({ user, token: data.token, isAuthenticated: true });

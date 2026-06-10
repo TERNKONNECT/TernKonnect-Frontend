@@ -4,6 +4,7 @@ export interface User {
   email: string;
   avatar?: string;
   joinedAt: string;
+  role?: "user" | "admin" | "super-admin" | "operator";
 }
 
 export interface Course {
@@ -110,13 +111,6 @@ export interface CourseProgress {
   percentage: number;
 }
 
-export type Category = 'Web Development' | 'Data Science' | 'Design' | 'Mobile Development' | 'Cloud Computing' | 'AI & Machine Learning';
+export type Category = string;
 
-export const CATEGORIES: Category[] = [
-  'Web Development',
-  'Data Science',
-  'Design',
-  'Mobile Development',
-  'Cloud Computing',
-  'AI & Machine Learning',
-];
+export const CATEGORIES: Category[] = [];
