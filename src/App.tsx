@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import MyLearning from "./pages/MyLearning";
 import CourseLearning from "./pages/CourseLearning";
 import Quiz from "./pages/Quiz";
@@ -41,6 +42,14 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
+          <Route
+            path="/payment-success"
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/services" element={<Services />} />
           <Route path="/get" element={<GetStarted />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
