@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { superAdminApi, type InstructorSummary } from "@/api/superadmin";
+import { superAdminApi } from "@/services/superadmin";
+import type { InstructorSummary } from "@/types/admin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,8 +15,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { TableSkeleton } from "@/components/shared/SkeletonLoader";
-import { EmptyState } from "@/components/shared/EmptyState";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -42,6 +48,7 @@ const Instructors = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<"admin" | "operator">("admin");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -67,7 +74,7 @@ const Instructors = () => {
   const handleInvite = async (e: FormEvent) => {
     e.preventDefault();
     if (!inviteName.trim() || !inviteEmail.trim()) {
-      toast.error("Enter the admin name and email.");
+      toast.error("Enter the name and email.");
       return;
     }
 
@@ -76,6 +83,7 @@ const Instructors = () => {
       const result = await superAdminApi.inviteInstructor(
         inviteName.trim(),
         inviteEmail.trim(),
+        inviteRole
       );
       setInstructors((current) => {
         const withoutExisting = current.filter(
@@ -85,15 +93,11 @@ const Instructors = () => {
       });
       setInviteName("");
       setInviteEmail("");
+      setInviteRole("admin");
       setInviteOpen(false);
       toast.success(result.message);
-    } catch (error) {
-      const apiError =
-        typeof error === "object" && error !== null && "response" in error
-          ? (error as { response?: { data?: { error?: string } } }).response
-              ?.data?.error
-          : undefined;
-      toast.error(apiError || "Failed to send admin invite");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send invite");
     } finally {
       setInviting(false);
     }
@@ -107,19 +111,19 @@ const Instructors = () => {
             Course Instructors
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            All admins on the platform and their course statistics
+            All admins and operators on the platform
           </p>
         </div>
         <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
           <DialogTrigger asChild>
             <Button className="w-full sm:w-auto">
               <MailPlus className="h-4 w-4 mr-2" />
-              Invite Admin
+              Invite Staff
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Invite Admin</DialogTitle>
+              <DialogTitle>Invite Admin/Operator</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleInvite} className="space-y-4">
               <div className="space-y-2">
@@ -141,6 +145,18 @@ const Instructors = () => {
                   placeholder="jane@example.com"
                 />
               </div>
+              <div className="space-y-2">
+                <Label>Role</Label>
+                <Select value={inviteRole} onValueChange={(v: "admin" | "operator") => setInviteRole(v)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="operator">Operator (No Finances)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <DialogFooter>
                 <Button type="submit" disabled={inviting}>
                   {inviting ? "Sending..." : "Send Invite"}
@@ -151,7 +167,6 @@ const Instructors = () => {
         </Dialog>
       </div>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardContent className="flex items-center gap-4 p-6">
@@ -159,7 +174,7 @@ const Instructors = () => {
               <Users className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Instructors</p>
+              <p className="text-sm text-muted-foreground">Total Staff</p>
               <p className="text-2xl font-bold">{instructors.length}</p>
             </div>
           </CardContent>
@@ -193,7 +208,7 @@ const Instructors = () => {
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search instructors..."
+              placeholder="Search staff..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9"
@@ -201,12 +216,11 @@ const Instructors = () => {
           </div>
 
           {loading ? (
-            <TableSkeleton />
+             <div className="animate-pulse h-32 bg-muted rounded-lg" />
           ) : !filtered.length ? (
-            <EmptyState
-              title="No instructors found"
-              description="No admins have been created yet."
-            />
+             <div className="text-center py-8 text-muted-foreground">
+              No staff found.
+            </div>
           ) : (
             <Table>
               <TableHeader>

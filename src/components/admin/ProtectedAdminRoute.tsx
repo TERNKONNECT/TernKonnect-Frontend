@@ -8,7 +8,7 @@ interface RouteProps {
 export function ProtectedAdminRoute({ children }: RouteProps) {
   const { isAuthenticated, user } = useAuthStore();
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (user?.role !== "admin" && user?.role !== "super-admin")
+  if (user?.role !== "admin" && user?.role !== "super-admin" && user?.role !== "operator")
     return <Navigate to="/" replace />;
   return <>{children}</>;
 }
@@ -16,6 +16,6 @@ export function ProtectedAdminRoute({ children }: RouteProps) {
 export function SuperAdminRoute({ children }: RouteProps) {
   const { isAuthenticated, user } = useAuthStore();
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (user?.role !== "super-admin") return <Navigate to="/dashboard" replace />;
+  if (user?.role !== "super-admin" && user?.role !== "admin") return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }

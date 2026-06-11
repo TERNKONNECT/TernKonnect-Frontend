@@ -11,6 +11,8 @@ import {
   Play,
   FileText,
   BookOpen,
+  CreditCard,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,12 +41,14 @@ const CourseDetail = () => {
   const [userComment, setUserComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
   const [hasReviewed, setHasReviewed] = useState(false);
+  const [checkingOut, setCheckingOut] = useState(false);
 
   const navigate = useNavigate();
   const { toast } = useToast();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const currentUser = useAuthStore((s) => s.user);
-  const { isEnrolled, enroll, getEnrolledCourse } = useEnrollmentStore();
+  const { isEnrolled, enroll, getEnrolledCourse, refreshFromServer } =
+    useEnrollmentStore();
 
   const { speak } = useTTS();
   // const voiceActive = useRef(false);
@@ -90,12 +94,13 @@ const CourseDetail = () => {
 
   useEffect(() => {
     if (id) {
+      if (isAuthenticated) refreshFromServer();
       api.getCourseById(id).then((c) => {
         setCourse(c || null);
         setLoading(false);
       });
     }
-  }, [id]);
+  }, [id, isAuthenticated, refreshFromServer]);
 
   // Fetch reviews from backend
   useEffect(() => {
@@ -116,7 +121,7 @@ const CourseDetail = () => {
       .catch(() => {});
   }, [id, currentUser?.id]);
 
-  const enrolled = id ? isEnrolled(id) : false;
+  const enrolled = id ? isEnrolled(id) || Boolean(course?.hasAccess) : false;
   const enrollment = id ? getEnrolledCourse(id) : undefined;
   const totalLessons =
     course?.modules.reduce((acc, m) => acc + m.lessons.length, 0) ?? 0;
@@ -131,8 +136,14 @@ const CourseDetail = () => {
       return;
     }
     if (id) {
+      if (course?.hasAccess) {
+        await refreshFromServer();
+        navigate(`/learn/${id}`);
+        return;
+      }
       try {
         await enroll(id);
+        await refreshFromServer();
         toast({
           title: "Enrolled!",
           description: `You've been enrolled in ${course?.title}`,
@@ -144,6 +155,43 @@ const CourseDetail = () => {
           variant: "destructive",
         });
       }
+    }
+  };
+
+  const handleCheckout = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (!id) return;
+
+    setCheckingOut(true);
+    try {
+      const res = await api.initializePayment(id);
+      if (res.authorizationUrl) {
+        window.location.href = res.authorizationUrl;
+      } else {
+        throw new Error("No authorization URL returned");
+      }
+    } catch (err: any) {
+      if (String(err.message || "").toLowerCase().includes("already have access")) {
+        await refreshFromServer();
+        setCourse((current) =>
+          current ? { ...current, hasAccess: true } : current,
+        );
+        toast({
+          title: "Access confirmed",
+          description: "You already have access to this course.",
+        });
+        navigate(`/learn/${id}`);
+        return;
+      }
+      toast({
+        title: "Checkout Failed",
+        description: err.message || "Could not initialize payment.",
+        variant: "destructive",
+      });
+      setCheckingOut(false);
     }
   };
 
@@ -258,6 +306,26 @@ const CourseDetail = () => {
                       ? "Continue Learning"
                       : "Start Learning"}
                   </Button>
+                </CardContent>
+              </Card>
+            ) : course.pricingType === "paid" ? (
+              <Card className="bg-white text-foreground">
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-2xl font-bold">
+                    {course.currency} {course.price?.toLocaleString()}
+                  </h3>
+                  <Button
+                    className="w-full gradient-primary border-0 text-white"
+                    size="lg"
+                    onClick={handleCheckout}
+                    disabled={checkingOut}
+                  >
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    {checkingOut ? "Processing..." : "Enroll Now"}
+                  </Button>
+                  <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                    <Lock className="h-3 w-3" /> Secure Paystack Checkout
+                  </p>
                 </CardContent>
               </Card>
             ) : (

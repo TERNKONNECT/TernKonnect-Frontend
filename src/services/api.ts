@@ -217,7 +217,12 @@ export const api = {
       err.courseTitle = data.courseTitle;
       throw err;
     }
-    return data as { status: string; courseId: string; courseTitle?: string };
+    return data as {
+      status: string;
+      courseId: string;
+      courseTitle?: string;
+      error?: string;
+    };
   },
 
   getInstructorProfile: async (adminId: string) => {

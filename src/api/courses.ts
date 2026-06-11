@@ -1,6 +1,18 @@
 import api from "./axios";
 import type { AdminCourse } from "@/types/admin";
 
+type CourseListResponse =
+  | AdminCourse[]
+  | {
+      courses?: AdminCourse[];
+      data?: AdminCourse[];
+    };
+
+const unwrapCourseList = (data: CourseListResponse): AdminCourse[] => {
+  if (Array.isArray(data)) return data;
+  return data.courses ?? data.data ?? [];
+};
+
 const uploadToSignedUrl = (
   uploadUrl: string,
   file: File,
@@ -27,7 +39,8 @@ const uploadToSignedUrl = (
   });
 
 export const coursesApi = {
-  getAll: () => api.get<AdminCourse[]>("/api/courses").then((r) => r.data),
+  getAll: () =>
+    api.get<CourseListResponse>("/api/courses").then((r) => unwrapCourseList(r.data)),
 
   getById: (id: string) =>
     api.get<AdminCourse>(`/api/courses/${id}`).then((r) => r.data),

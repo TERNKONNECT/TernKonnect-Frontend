@@ -9,12 +9,15 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
+import AdminInvite from "./pages/AdminInvite";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MyLearning from "./pages/MyLearning";
 import CourseLearning from "./pages/CourseLearning";
 import Quiz from "./pages/Quiz";
 import Profile from "./pages/Profile";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFailed from "./pages/PaymentFailed";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import {
@@ -59,10 +62,12 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Courses />} />
+            {/* <Route path="/" element={<Index />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/admin-invite" element={<AdminInvite />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -71,6 +76,22 @@ const App = () => (
             <Route path="/services" element={<Services />} />
             <Route path="/get" element={<GetStarted />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route
+              path="/payment/success"
+              element={
+                <ProtectedRoute>
+                  <PaymentSuccess />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment/failed"
+              element={
+                <ProtectedRoute>
+                  <PaymentFailed />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/my-learning"
               element={

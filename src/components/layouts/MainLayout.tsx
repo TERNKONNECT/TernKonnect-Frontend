@@ -15,10 +15,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const navLinks = [
-    { to: "/", label: "Home" },
+    // { to: "/", label: "Home" },
     { to: "/courses", label: "Explore Academy" },
     { to: "/about", label: "About Us" },
-    { to: "/services", label: "Services" },
+    // { to: "/services", label: "Services" },
     // ...(isAuthenticated ? [{ to: "/my-learning", label: "My Learning" }] : []),
   ];
 
@@ -70,13 +70,15 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                   </Button>
                 </Link> */}
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="gradient-primary border-0 text-white"
-                >
-                  Get a Demo
-                </Button>
+                <Link to="/contact">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gradient-primary border-0 text-white"
+                  >
+                    Get a Demo
+                  </Button>
+                </Link>
                 {/* <Button
                   variant="ghost"
                   size="sm"

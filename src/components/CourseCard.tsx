@@ -10,6 +10,7 @@ const CourseCard = ({ course }: { course: Course }) => {
     Intermediate: 'bg-yellow-100 text-yellow-700',
     Advanced: 'bg-red-100 text-red-700',
   }[course.level];
+  const isPaid = course.pricingType === 'paid' && Number(course.price) > 0;
 
   return (
     <Link to={`/courses/${course.id}`}>
@@ -26,6 +27,9 @@ const CourseCard = ({ course }: { course: Course }) => {
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="text-xs">{course.category}</Badge>
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${levelColor}`}>{course.level}</span>
+            <span className="ml-auto text-xs font-semibold text-foreground">
+              {isPaid ? `${course.currency ?? 'NGN'} ${Number(course.price).toLocaleString()}` : 'Free'}
+            </span>
           </div>
           <h3 className="font-semibold text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
             {course.title}
