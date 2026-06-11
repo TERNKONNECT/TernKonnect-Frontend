@@ -160,8 +160,8 @@ const CourseDetail = () => {
     setCheckingOut(true);
     try {
       const res = await api.initializePayment(id);
-      if (res.authorization_url) {
-        window.location.href = res.authorization_url;
+      if (res.authorizationUrl) {
+        window.location.href = res.authorizationUrl;
       } else {
         throw new Error("No authorization URL returned");
       }

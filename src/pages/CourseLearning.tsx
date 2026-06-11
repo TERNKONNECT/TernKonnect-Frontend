@@ -63,6 +63,16 @@ const CourseLearning = () => {
     }
     api.getCourseById(courseId).then((c) => {
       if (c) {
+        if (c.hasAccess === false) {
+          navigate(`/courses/${courseId}`);
+          toast({
+            title: "Payment required",
+            description: "Please complete payment before starting this course.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
         setCourse(c);
         const enrollment = getEnrolledCourse(courseId);
         let firstIncomplete: string | null = null;

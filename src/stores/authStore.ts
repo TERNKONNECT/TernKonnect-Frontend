@@ -2,7 +2,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User } from "@/types";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
+  "http://localhost:9000";
 
 interface AuthState {
   user: User | null;
@@ -40,6 +43,8 @@ export const useAuthStore = create<AuthState>()(
         };
 
         set({ user, token: data.token, isAuthenticated: true });
+        localStorage.setItem("lms_token", data.token);
+        localStorage.setItem("lms_user", JSON.stringify(user));
 
         // Load THIS user's enrollment data immediately after login
         const { useEnrollmentStore } = await import("./enrollmentStore");
@@ -68,6 +73,8 @@ export const useAuthStore = create<AuthState>()(
         };
 
         set({ user, token: data.token, isAuthenticated: true });
+        localStorage.setItem("lms_token", data.token);
+        localStorage.setItem("lms_user", JSON.stringify(user));
 
         // New user — initialize with empty enrollments
         const { useEnrollmentStore } = await import("./enrollmentStore");
@@ -83,6 +90,8 @@ export const useAuthStore = create<AuthState>()(
         });
 
         set({ user: null, token: null, isAuthenticated: false });
+        localStorage.removeItem("lms_token");
+        localStorage.removeItem("lms_user");
       },
     }),
     { name: "lms-auth" },
