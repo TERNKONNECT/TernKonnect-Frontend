@@ -2,9 +2,9 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  role: "user" | "admin" | "super-admin" | "operator";
   avatar?: string;
   joinedAt: string;
-  role?: "user" | "admin" | "super-admin" | "operator";
 }
 
 export interface Course {
@@ -15,7 +15,7 @@ export interface Course {
   thumbnail: string;
   instructor: Instructor;
   category: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  level: "Beginner" | "Intermediate" | "Advanced";
   duration: string;
   rating: number;
   reviewCount: number;
@@ -24,7 +24,7 @@ export interface Course {
   modules: Module[];
   reviews: Review[];
   isFeatured?: boolean;
-  pricingType?: 'free' | 'paid';
+  pricingType?: "free" | "paid";
   price?: number;
   currency?: string;
   hasAccess?: boolean;
@@ -57,7 +57,7 @@ export interface Lesson {
   duration: string;
   videoUrl: string;
   order: number;
-  type: 'video' | 'reading' | 'exercise';
+  type: "video" | "reading" | "exercise";
   locked?: boolean;
 }
 
@@ -111,6 +111,19 @@ export interface CourseProgress {
   percentage: number;
 }
 
-export type Category = string;
+export type Category =
+  | "Web Development"
+  | "Data Science"
+  | "Design"
+  | "Mobile Development"
+  | "Cloud Computing"
+  | "AI & Machine Learning";
 
-export const CATEGORIES: Category[] = [];
+export const CATEGORIES: Category[] = [
+  "Web Development",
+  "Data Science",
+  "Design",
+  "Mobile Development",
+  "Cloud Computing",
+  "AI & Machine Learning",
+];
