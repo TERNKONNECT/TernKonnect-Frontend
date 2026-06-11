@@ -15,10 +15,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const navLinks = [
-    { to: "/", label: "Home" },
+    // { to: "/", label: "Home" },
     { to: "/courses", label: "Explore Academy" },
     { to: "/about", label: "About Us" },
-    { to: "/services", label: "Services" },
+    // { to: "/services", label: "Services" },
     // ...(isAuthenticated ? [{ to: "/my-learning", label: "My Learning" }] : []),
   ];
 
