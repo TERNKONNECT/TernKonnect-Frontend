@@ -47,7 +47,8 @@ const CourseDetail = () => {
   const { toast } = useToast();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const currentUser = useAuthStore((s) => s.user);
-  const { isEnrolled, enroll, getEnrolledCourse } = useEnrollmentStore();
+  const { isEnrolled, enroll, getEnrolledCourse, refreshFromServer } =
+    useEnrollmentStore();
 
   const { speak } = useTTS();
   // const voiceActive = useRef(false);
@@ -93,12 +94,13 @@ const CourseDetail = () => {
 
   useEffect(() => {
     if (id) {
+      if (isAuthenticated) refreshFromServer();
       api.getCourseById(id).then((c) => {
         setCourse(c || null);
         setLoading(false);
       });
     }
-  }, [id]);
+  }, [id, isAuthenticated, refreshFromServer]);
 
   // Fetch reviews from backend
   useEffect(() => {
@@ -119,7 +121,7 @@ const CourseDetail = () => {
       .catch(() => {});
   }, [id, currentUser?.id]);
 
-  const enrolled = id ? isEnrolled(id) : false;
+  const enrolled = id ? isEnrolled(id) || Boolean(course?.hasAccess) : false;
   const enrollment = id ? getEnrolledCourse(id) : undefined;
   const totalLessons =
     course?.modules.reduce((acc, m) => acc + m.lessons.length, 0) ?? 0;
@@ -134,8 +136,14 @@ const CourseDetail = () => {
       return;
     }
     if (id) {
+      if (course?.hasAccess) {
+        await refreshFromServer();
+        navigate(`/learn/${id}`);
+        return;
+      }
       try {
         await enroll(id);
+        await refreshFromServer();
         toast({
           title: "Enrolled!",
           description: `You've been enrolled in ${course?.title}`,
@@ -166,6 +174,18 @@ const CourseDetail = () => {
         throw new Error("No authorization URL returned");
       }
     } catch (err: any) {
+      if (String(err.message || "").toLowerCase().includes("already have access")) {
+        await refreshFromServer();
+        setCourse((current) =>
+          current ? { ...current, hasAccess: true } : current,
+        );
+        toast({
+          title: "Access confirmed",
+          description: "You already have access to this course.",
+        });
+        navigate(`/learn/${id}`);
+        return;
+      }
       toast({
         title: "Checkout Failed",
         description: err.message || "Could not initialize payment.",

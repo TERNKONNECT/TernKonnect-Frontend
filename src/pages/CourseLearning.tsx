@@ -57,13 +57,10 @@ const CourseLearning = () => {
 
   useEffect(() => {
     if (!courseId) return;
-    if (!isEnrolled(courseId)) {
-      navigate(`/courses/${courseId}`);
-      return;
-    }
     api.getCourseById(courseId).then((c) => {
       if (c) {
-        if (c.hasAccess === false) {
+        const hasAccess = c.hasAccess === true || isEnrolled(courseId);
+        if (!hasAccess) {
           navigate(`/courses/${courseId}`);
           toast({
             title: "Payment required",
@@ -91,7 +88,7 @@ const CourseLearning = () => {
       }
       setLoading(false);
     });
-  }, [courseId]);
+  }, [courseId, isEnrolled, getEnrolledCourse, navigate, toast]);
 
   const allLessons = useMemo(
     () => course?.modules.flatMap((m) => m.lessons) ?? [],

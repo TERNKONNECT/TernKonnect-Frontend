@@ -27,6 +27,17 @@ const PaymentSuccess = () => {
     api
       .verifyPayment(reference)
       .then(async (payment) => {
+        if (payment.status !== "success") {
+          setState({
+            loading: false,
+            courseId: payment.courseId,
+            courseTitle: payment.courseTitle,
+            error:
+              payment.error ||
+              "Payment is still processing. Access will be granted after Paystack confirms the payment.",
+          });
+          return;
+        }
         await refreshFromServer();
         setState({
           loading: false,
