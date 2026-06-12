@@ -1,0 +1,411 @@
+
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import MainLayout from "@/components/layouts/MainLayout";
+import { api } from "@/services/api";
+import type { Course } from "@/types";
+import { useTTS } from "@/hooks/useTTS";
+import "@/assets/academy.css";
+
+const Index = () => {
+  const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("learners");
+  const navigate = useNavigate();
+  const { speak } = useTTS();
+
+  useEffect(() => {
+    api.getFeaturedCourses().then((c) => {
+      setFeaturedCourses(c);
+      setLoading(false);
+    });
+  }, []);
+
+  const displayCourses = featuredCourses.slice(0, 6);
+
+  return (
+    <MainLayout>
+      <div className="academy-page">
+
+
+  <!-- HERO -->
+  <section className="hero" aria-labelledby="hero-heading">
+    <div className="hero-content">
+      <p className="hero-eyebrow">Ternkonnect Digital Inclusive Academy</p>
+      <h1 id="hero-heading">
+        Learn Without<br /><em>Barriers.</em><br />Thrive Without Limits.
+      </h1>
+      <p className="hero-sub">
+        An inclusive learning platform equipping persons with disabilities with digital skills and career opportunities — while helping educators build classrooms where every learner succeeds.
+      </p>
+      <div className="hero-actions">
+        <a href="#learners" className="btn-primary">Start Learning →</a>
+        <a href="#educators" className="btn-secondary">Teach for Inclusion</a>
+      </div>
+    </div>
+    <div className="hero-visual" aria-hidden="true">
+      <div className="hero-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=700&q=80"
+          alt="Person using a laptop in a bright, inclusive workspace"
+          loading="eager"
+        />
+      </div>
+      <div className="hero-badge">
+        Accessibility First
+        <span>Every course, every learner</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div className="stats-strip" role="region" aria-label="Key statistics">
+    <div className="stat-item">
+      <div className="stat-num">500+</div>
+      <div className="stat-label">Learners on Waitlist</div>
+    </div>
+    <div className="stat-item">
+      <div className="stat-num">7</div>
+      <div className="stat-label">Skill Tracks</div>
+    </div>
+    <div className="stat-item">
+      <div className="stat-num">2</div>
+      <div className="stat-label">Learner Pathways</div>
+    </div>
+    <div className="stat-item">
+      <div className="stat-num">100%</div>
+      <div className="stat-label">Accessible Design</div>
+    </div>
+  </div>
+
+  <!-- FOR LEARNERS -->
+  <section className="for-learners" id="learners" aria-labelledby="learners-heading">
+    <p className="section-eyebrow">For Learners</p>
+    <h2 className="section-title" id="learners-heading">Learn Digital Skills That Open Doors</h2>
+    <p className="section-sub">Accessible, practical, and inclusive — our programmes are built around how you learn, not how others expect you to.</p>
+
+    <div className="learners-grid">
+      <div className="learners-img">
+        <img
+          src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80"
+          alt="Group of diverse learners working on laptops together"
+          loading="lazy"
+        />
+      </div>
+      <div>
+        <h3 style={{"fontFamily":"'Syne',sans-serif","fontSize":"1.5rem","fontWeight":"700","marginBottom":"0.5rem"}}>What You'll Gain</h3>
+        <p style={{"color":"var(--text-muted)","fontSize":"0.95rem"}}>Everything you need to enter, grow, and thrive in the digital economy.</p>
+        <ul className="gains-list" role="list">
+          <li>
+            <span className="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Learn digital skills</strong> — practical, in-demand, and accessible from day one</span>
+          </li>
+          <li>
+            <span className="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Real-world projects</strong> and portfolio development to showcase your abilities</span>
+          </li>
+          <li>
+            <span className="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Career readiness support</strong> — employability coaching and job placement pathways</span>
+          </li>
+          <li>
+            <span className="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Freelancing & entrepreneurship</strong> opportunities to work on your own terms</span>
+          </li>
+          <li>
+            <span className="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Access to internships and jobs</strong> through our partner network</span>
+          </li>
+        </ul>
+        <div className="cta-inline">
+          <a href="#join" className="btn-primary">Learn. Work. Thrive. →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR EDUCATORS -->
+  <section className="for-educators" id="educators" aria-labelledby="educators-heading">
+    <p className="section-eyebrow">For Educators</p>
+    <h2 className="section-title" id="educators-heading">Build Classrooms That Work for Everyone</h2>
+    <p className="section-sub">Develop the knowledge, tools, and confidence to create inclusive learning environments where every student can thrive.</p>
+
+    <div className="educators-grid">
+      <div>
+        <div className="edu-cards" role="list">
+          <div className="edu-card" role="listitem">
+            <div className="edu-card-icon">♿</div>
+            <h4>Disability Awareness & Inclusive Education</h4>
+          </div>
+          <div className="edu-card" role="listitem">
+            <div className="edu-card-icon">🖥️</div>
+            <h4>Assistive Technology for Teaching</h4>
+          </div>
+          <div className="edu-card" role="listitem">
+            <div className="edu-card-icon">📝</div>
+            <h4>Accessible Content Creation</h4>
+          </div>
+          <div className="edu-card" role="listitem">
+            <div className="edu-card-icon">🎯</div>
+            <h4>Inclusive Teaching Strategies</h4>
+          </div>
+          <div className="edu-card" role="listitem">
+            <div className="edu-card-icon">🏫</div>
+            <h4>Leadership for Inclusive Institutions</h4>
+          </div>
+          <div className="edu-card" role="listitem">
+            <div className="edu-card-icon">🎓</div>
+            <h4>Recognized Certification</h4>
+          </div>
+        </div>
+        <div className="cta-inline" style={{"marginTop":"2rem"}}>
+          <a href="#join" className="btn-primary">Teach for Inclusion →</a>
+        </div>
+      </div>
+      <div className="edu-img">
+        <img
+          src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80"
+          alt="Educator working with a diverse group of students in an inclusive classroom"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY TERNKONNECT -->
+  <section className="why" id="why" aria-labelledby="why-heading">
+    <div className="why-header">
+      <div>
+        <p className="section-eyebrow">Why Ternkonnect Academy?</p>
+        <h2 className="section-title" id="why-heading">Designed Around the Learner, Not the System</h2>
+        <p className="section-sub">Five pillars that make Ternkonnect different — and keep our learners coming back.</p>
+      </div>
+      <div className="why-img">
+        <img
+          src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+          alt="Collaborative team working on inclusive digital projects"
+          loading="lazy"
+        />
+      </div>
+    </div>
+    <div className="pillars" role="list">
+      <div className="pillar-card" role="listitem">
+        <div className="pillar-icon" aria-hidden="true">♿</div>
+        <h3>Accessibility First</h3>
+        <p>Every course is designed to be accessible and inclusive for diverse learners — from the ground up, not as an afterthought.</p>
+      </div>
+      <div className="pillar-card" role="listitem">
+        <div className="pillar-icon" aria-hidden="true">🛠️</div>
+        <h3>Practical Learning</h3>
+        <p>Gain skills that can be applied immediately in education, employment, and entrepreneurship — real work, real impact.</p>
+      </div>
+      <div className="pillar-card" role="listitem">
+        <div className="pillar-icon" aria-hidden="true">🤝</div>
+        <h3>Personalized Support</h3>
+        <p>Access learning accommodations, assistive technologies, and one-on-one guidance tailored to your needs.</p>
+      </div>
+      <div className="pillar-card" role="listitem">
+        <div className="pillar-icon" aria-hidden="true">💼</div>
+        <h3>Career & Economic Pathways</h3>
+        <p>Connect learning with real employment, freelancing opportunities, and business development support.</p>
+      </div>
+      <div className="pillar-card" role="listitem">
+        <div className="pillar-icon" aria-hidden="true">🏅</div>
+        <h3>Recognized Certification</h3>
+        <p>Earn certificates that credibly showcase your skills and achievements to employers and partners.</p>
+      </div>
+      <div className="pillar-card" role="listitem">
+        <div className="pillar-icon" aria-hidden="true">🌍</div>
+        <h3>Community-Led Growth</h3>
+        <p>Learn alongside a growing network of inclusive learners, educators, and organizations across Nigeria.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE SERVE -->
+  <section className="who-serve" aria-labelledby="serve-heading">
+    <p className="section-eyebrow">Who We Serve</p>
+    <h2 className="section-title" id="serve-heading">Built for Learners and Leaders Alike</h2>
+    <p className="section-sub">Whether you're building your career or building more inclusive institutions — there's a place for you here.</p>
+    <div className="serve-grid">
+      <div className="serve-card">
+        <div className="serve-card-img">
+          <img
+            src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=700&q=80"
+            alt="Young person using assistive technology on a computer"
+            loading="lazy"
+          />
+        </div>
+        <div className="serve-card-body">
+          <h3>Learners</h3>
+          <ul className="serve-tag-list" role="list">
+            <li className="serve-tag">Persons with visual impairments</li>
+            <li className="serve-tag">Persons with hearing impairments</li>
+            <li className="serve-tag">Persons with learning disabilities</li>
+            <li className="serve-tag">Youth seeking digital opportunities</li>
+          </ul>
+        </div>
+      </div>
+      <div className="serve-card">
+        <div className="serve-card-img">
+          <img
+            src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=700&q=80"
+            alt="Educators collaborating in a professional training setting"
+            loading="lazy"
+          />
+        </div>
+        <div className="serve-card-body">
+          <h3>Educators & Organizations</h3>
+          <ul className="serve-tag-list" role="list">
+            <li className="serve-tag">Teachers and trainers</li>
+            <li className="serve-tag">School leaders and administrators</li>
+            <li className="serve-tag">Educational institutions</li>
+            <li className="serve-tag">NGOs and disability-focused organizations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+          {/* COURSES */}
+        <section id="courses" style={{"background":"var(--white)","padding":"6rem 6rem"}} aria-labelledby="courses-heading">
+          <p className="section-eyebrow">Our Courses</p>
+          <h2 className="section-title" id="courses-heading">Find Your Learning Path</h2>
+          <p className="section-sub">Two pathways, one mission — every course is accessible, practical, and built for real outcomes.</p>
+
+          {/* TABS */}
+          <div className="courses-tabs" role="tablist" aria-label="Course pathways" style={{"marginTop":"2.5rem"}}>
+            <button
+              className={`course-tab ${activeTab === 'learners' ? 'active' : ''}`}
+              onClick={() => setActiveTab('learners')}
+            >
+              🎓 For Learners
+            </button>
+            <button
+              className={`course-tab ${activeTab === 'educators' ? 'active' : ''}`}
+              onClick={() => setActiveTab('educators')}
+            >
+              🏫 For Educators
+            </button>
+          </div>
+
+          <div className="course-panel active">
+            <div className="course-grid">
+              {loading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="course-card p-4">
+                    <div className="h-24 bg-muted animate-pulse rounded-md mb-4"></div>
+                    <div className="h-6 bg-muted animate-pulse w-3/4 mb-2"></div>
+                    <div className="h-4 bg-muted animate-pulse w-full"></div>
+                  </div>
+                ))
+              ) : displayCourses.length > 0 ? (
+                displayCourses.map((course) => (
+                  <div key={course.id} className="course-card">
+                    <div className="course-card-top" style={{"background":"linear-gradient(135deg,#6B5CE7,#00B8A9)"}}>
+                      <span className="course-icon">📚</span>
+                    </div>
+                    <div className="course-card-body">
+                      <div className="course-meta">
+                        <span className="badge-level beginner">{course.level || "Beginner"}</span>
+                        <span className="badge-format">{course.duration || "Self-Paced"}</span>
+                      </div>
+                      <h3>{course.title}</h3>
+                      <p>{course.description?.substring(0, 80)}...</p>
+                      <div className="course-footer">
+                        <span>⏱ {course.duration || "4 Weeks"}</span>
+                        <Link to={`/courses/${course.id}`} className="course-cta">Enrol →</Link>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground py-8">No courses available at the moment.</p>
+              )}
+            </div>
+          </div>
+        </section>
+  <!-- MISSION -->
+  <section className="mission" aria-labelledby="mission-heading">
+    <p className="section-eyebrow" style={{"color":"rgba(255,255,255,0.5)","justifyContent":"center"}}>Our Mission</p>
+    <p className="mission-text" id="mission-heading">
+      To create a world where <em>disability is never a barrier</em> to learning, employment, or opportunity — by providing accessible education, assistive technology, and pathways to economic empowerment.
+    </p>
+    <a href="#join" className="btn-secondary" style={{"display":"inline-flex"}}>Join the Movement →</a>
+  </section>
+
+  <!-- ASSISTIVE TOOLS -->
+  <section style={{"background":"var(--ink)","color":"#fff"}} id="assistive-tools" aria-labelledby="tools-heading">
+    <p className="section-eyebrow" style={{"color":"var(--teal)"}}>Ternkonnect Assistive Tools</p>
+    <h2 className="section-title" id="tools-heading" style={{"color":"#fff"}}>Technology That Removes the Barrier</h2>
+    <p className="section-sub" style={{"color":"rgba(255,255,255,0.65)"}}>Our built-in assistive tools ensure every learner can access, engage with, and complete their training — regardless of disability type.</p>
+    <div style={{"display":"grid","gridTemplateColumns":"repeat(3,1fr)","gap":"1.5rem","marginTop":"3rem"}}>
+      <div style={{"background":"rgba(255,255,255,0.05)","border":"1px solid rgba(107,92,231,0.25)","borderRadius":"16px","padding":"2rem"}}><div style={{"fontSize":"2rem","marginBottom":"1rem"}}>🔊</div><h3 style={{"fontFamily":"Syne,sans-serif","fontSize":"1rem","fontWeight":"700","marginBottom":"0.5rem"}}>Screen Reader Support</h3><p style={{"fontSize":"0.88rem","color":"rgba(255,255,255,0.6)","lineHeight":"1.65"}}>Full compatibility with NVDA, JAWS, and VoiceOver so visually impaired learners navigate every course.</p></div>
+      <div style={{"background":"rgba(255,255,255,0.05)","border":"1px solid rgba(107,92,231,0.25)","borderRadius":"16px","padding":"2rem"}}><div style={{"fontSize":"2rem","marginBottom":"1rem"}}>💬</div><h3 style={{"fontFamily":"Syne,sans-serif","fontSize":"1rem","fontWeight":"700","marginBottom":"0.5rem"}}>Closed Captions &amp; Transcripts</h3><p style={{"fontSize":"0.88rem","color":"rgba(255,255,255,0.6)","lineHeight":"1.65"}}>Every video includes accurate captions and downloadable transcripts for deaf and hard-of-hearing learners.</p></div>
+      <div style={{"background":"rgba(255,255,255,0.05)","border":"1px solid rgba(107,92,231,0.25)","borderRadius":"16px","padding":"2rem"}}><div style={{"fontSize":"2rem","marginBottom":"1rem"}}>🖊️</div><h3 style={{"fontFamily":"Syne,sans-serif","fontSize":"1rem","fontWeight":"700","marginBottom":"0.5rem"}}>Adjustable Reading Tools</h3><p style={{"fontSize":"0.88rem","color":"rgba(255,255,255,0.6)","lineHeight":"1.65"}}>Font size, spacing, dyslexia-friendly typefaces, and high-contrast modes for learners with reading disabilities.</p></div>
+      <div style={{"background":"rgba(255,255,255,0.05)","border":"1px solid rgba(107,92,231,0.25)","borderRadius":"16px","padding":"2rem"}}><div style={{"fontSize":"2rem","marginBottom":"1rem"}}>⌨️</div><h3 style={{"fontFamily":"Syne,sans-serif","fontSize":"1rem","fontWeight":"700","marginBottom":"0.5rem"}}>Keyboard-Only Navigation</h3><p style={{"fontSize":"0.88rem","color":"rgba(255,255,255,0.6)","lineHeight":"1.65"}}>Every feature is fully accessible by keyboard alone — no mouse required.</p></div>
+      <div style={{"background":"rgba(255,255,255,0.05)","border":"1px solid rgba(107,92,231,0.25)","borderRadius":"16px","padding":"2rem"}}><div style={{"fontSize":"2rem","marginBottom":"1rem"}}>🧠</div><h3 style={{"fontFamily":"Syne,sans-serif","fontSize":"1rem","fontWeight":"700","marginBottom":"0.5rem"}}>Cognitive Load Controls</h3><p style={{"fontSize":"0.88rem","color":"rgba(255,255,255,0.6)","lineHeight":"1.65"}}>Simplified layouts, chunked content, and progress checkpoints designed for neurodivergent learners.</p></div>
+      <div style={{"background":"rgba(255,255,255,0.05)","border":"1px solid rgba(107,92,231,0.25)","borderRadius":"16px","padding":"2rem"}}><div style={{"fontSize":"2rem","marginBottom":"1rem"}}>📱</div><h3 style={{"fontFamily":"Syne,sans-serif","fontSize":"1rem","fontWeight":"700","marginBottom":"0.5rem"}}>Mobile-First Access</h3><p style={{"fontSize":"0.88rem","color":"rgba(255,255,255,0.6)","lineHeight":"1.65"}}>Optimised for low-bandwidth mobile devices, ensuring access beyond desktop environments.</p></div>
+    </div>
+  </section>
+
+  <!-- IMPACT -->
+  <section style={{"background":"var(--grey)"}} id="impact" aria-labelledby="impact-heading">
+    <p className="section-eyebrow">Impact</p>
+    <h2 className="section-title" id="impact-heading">Changing Lives, One Learner at a Time</h2>
+    <p className="section-sub">Real outcomes for real people — across Nigeria and beyond.</p>
+    <div style={{"display":"grid","gridTemplateColumns":"repeat(4,1fr)","gap":"1.5rem","marginTop":"3rem"}}>
+      <div style={{"background":"#fff","borderRadius":"16px","padding":"2rem","textAlign":"center","boxShadow":"0 4px 20px rgba(107,92,231,0.07)"}}><div style={{"fontFamily":"Syne,sans-serif","fontSize":"2.8rem","fontWeight":"800","color":"var(--purple)","letterSpacing":"-0.03em"}}>500+</div><div style={{"fontSize":"0.88rem","color":"var(--text-muted)","marginTop":"6px","fontWeight":"500"}}>Learners on Waitlist</div></div>
+      <div style={{"background":"#fff","borderRadius":"16px","padding":"2rem","textAlign":"center","boxShadow":"0 4px 20px rgba(107,92,231,0.07)"}}><div style={{"fontFamily":"Syne,sans-serif","fontSize":"2.8rem","fontWeight":"800","color":"var(--purple)","letterSpacing":"-0.03em"}}>7</div><div style={{"fontSize":"0.88rem","color":"var(--text-muted)","marginTop":"6px","fontWeight":"500"}}>Digital Skill Tracks</div></div>
+      <div style={{"background":"#fff","borderRadius":"16px","padding":"2rem","textAlign":"center","boxShadow":"0 4px 20px rgba(107,92,231,0.07)"}}><div style={{"fontFamily":"Syne,sans-serif","fontSize":"2.8rem","fontWeight":"800","color":"var(--purple)","letterSpacing":"-0.03em"}}>3+</div><div style={{"fontSize":"0.88rem","color":"var(--text-muted)","marginTop":"6px","fontWeight":"500"}}>Institutional Pilot Partners</div></div>
+      <div style={{"background":"#fff","borderRadius":"16px","padding":"2rem","textAlign":"center","boxShadow":"0 4px 20px rgba(107,92,231,0.07)"}}><div style={{"fontFamily":"Syne,sans-serif","fontSize":"2.8rem","fontWeight":"800","color":"var(--purple)","letterSpacing":"-0.03em"}}>100%</div><div style={{"fontSize":"0.88rem","color":"var(--text-muted)","marginTop":"6px","fontWeight":"500"}}>Accessibility Compliant</div></div>
+    </div>
+    <div style={{"marginTop":"3rem","background":"#fff","borderRadius":"20px","padding":"3rem","borderLeft":"4px solid var(--purple)","boxShadow":"0 4px 24px rgba(107,92,231,0.07)"}}>
+      <p style={{"fontFamily":"Syne,sans-serif","fontSize":"1.25rem","fontWeight":"700","lineHeight":"1.5","color":"var(--ink)","marginBottom":"1rem"}}>"Ternkonnect gave me a pathway into tech that actually worked with my disability — not around it."</p>
+      <p style={{"fontSize":"0.88rem","color":"var(--text-muted)"}}>— Early learner, Data Entry &amp; Virtual Assistance cohort</p>
+    </div>
+  </section>
+
+  <!-- OUR STORY -->
+  <section style={{"background":"var(--white)"}} id="about" aria-labelledby="about-heading">
+    <div style={{"display":"grid","gridTemplateColumns":"1fr 1fr","gap":"4rem","alignItems":"center"}}>
+      <div>
+        <p className="section-eyebrow">Our Story</p>
+        <h2 className="section-title" id="about-heading">Built From the Ground Up — With Inclusion at the Core</h2>
+        <p style={{"color":"var(--text-muted)","fontSize":"1rem","lineHeight":"1.8","marginBottom":"1.5rem"}}>Ternkonnect was founded on a simple but urgent belief: that disability should never determine someone's access to education, employment, or economic opportunity. In Nigeria, millions of persons with disabilities are locked out of the digital economy — not because of their abilities, but because the systems were not designed for them.</p>
+        <p style={{"color":"var(--text-muted)","fontSize":"1rem","lineHeight":"1.8","marginBottom":"1.5rem"}}>We started Ternkonnect to change that — with accessible digital skills training, assistive technology, and direct pathways to jobs and entrepreneurship. We work with learners, educators, schools, and NGOs to build an ecosystem where inclusion is the standard, not the exception.</p>
+        <p style={{"color":"var(--text-muted)","fontSize":"1rem","lineHeight":"1.8"}}>We are pre-launch and growing fast — with institutional pilots underway and a community of learners ready to begin.</p>
+      </div>
+      <div style={{"borderRadius":"20px","overflow":"hidden","aspectRatio":"4/5"}}><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&amp;q=80" alt="Diverse team collaborating on inclusive digital education" loading="lazy" style={{"width":"100%","height":"100%","objectFit":"cover"}} /></div>
+    </div>
+  </section>
+
+  <!-- JOIN CTA -->
+  <section className="join" id="join" aria-labelledby="join-heading">
+    <div className="join-img">
+      <img
+        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80"
+        alt="Diverse group of professionals working together on digital skills"
+        loading="lazy"
+      />
+    </div>
+    <div className="join-content">
+      <p className="section-eyebrow">Join the Academy</p>
+      <h2 className="section-title" id="join-heading">Your Journey Starts Here</h2>
+      <p>
+        Whether you're looking to build digital skills, access career opportunities, or create more inclusive learning environments — Ternkonnect Digital Inclusive Academy is here to support your journey.
+      </p>
+      <div className="join-actions">
+        <a href="#learners" className="btn-primary">I'm a Learner →</a>
+        <a href="#educators" className="btn-secondary">I'm an Educator</a>
+      </div>
+    </div>
+  </section>
+
+
+      </div>
+    </MainLayout>
+  );
+};
+export default Index;

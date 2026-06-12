@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, BookOpen, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/authStore";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -44,6 +45,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             <Link to="/instructor-signup">
               <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                 Become an Instructor
@@ -112,6 +114,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                 {link.label}
               </Link>
             ))}
+            <div className="pt-3 border-t flex justify-between items-center">
+              <span className="text-sm font-medium text-muted-foreground">Theme</span>
+              <ThemeToggle />
+            </div>
             <div className="pt-3 border-t space-y-2">
               <Link to="/instructor-signup" onClick={() => setMobileOpen(false)}>
                 <Button variant="outline" size="sm" className="w-full justify-start border-primary text-primary hover:bg-primary hover:text-primary-foreground mb-2">

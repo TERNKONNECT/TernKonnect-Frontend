@@ -1,414 +1,405 @@
+import { Check, Monitor, FileText, Target, School, GraduationCap, UserCheck, Wrench, Handshake, Briefcase, Award, Globe, BookOpen, Volume2, MessageSquare, Type, Keyboard, Brain, Smartphone } from "lucide-react";
+
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Search,
-  ArrowRight,
-  Star,
-  GraduationCap,
-  Users,
-  Award,
-  ChevronRight,
-  Mic,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import MainLayout from "@/components/layouts/MainLayout";
-import CourseCard from "@/components/CourseCard";
 import { api } from "@/services/api";
-import { CATEGORIES } from "@/types";
-import { testimonials } from "@/data/courses";
 import type { Course } from "@/types";
 import { useTTS } from "@/hooks/useTTS";
-import { useVoiceCommands } from "@/hooks/useVoiceCommands";
+import "@/assets/academy.css";
 
 const Index = () => {
   const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [voiceStarted, setVoiceStarted] = useState(false);
-  const [activeTab, setActiveTab] = useState(CATEGORIES[0]);
+  const [activeTab, setActiveTab] = useState("learners");
   const navigate = useNavigate();
   const { speak } = useTTS();
-  const flowStep = useRef<"idle" | "ask-auth" | "ask-course">("idle");
-  const coursesRef = useRef<Course[]>([]);
 
   useEffect(() => {
     api.getFeaturedCourses().then((c) => {
       setFeaturedCourses(c);
-      coursesRef.current = c;
       setLoading(false);
     });
   }, []);
 
-  useEffect(() => {
-    const step = localStorage.getItem("voice_flow_step");
-    if (step === "ask-course") {
-      localStorage.removeItem("voice_flow_step");
-      flowStep.current = "ask-course";
-      setVoiceStarted(true);
-      voiceStartedRef.current = true;
-      const trySpeak = () => {
-        const courses = coursesRef.current;
-        if (courses.length === 0) {
-          setTimeout(trySpeak, 500);
-          return;
-        }
-        const titles = courses.map((c) => c.title).join(". ");
-        speak(
-          `Welcome back! Here are the available courses: ${titles}. Which course would you like to take?`,
-        );
-      };
-      setTimeout(trySpeak, 800);
-    }
-  }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim())
-      navigate(`/courses?q=${encodeURIComponent(searchQuery)}`);
-  };
-
-  const voiceStartedRef = useRef(false);
-
-  const startVoice = () => {
-    if (voiceStartedRef.current) return;
-    voiceStartedRef.current = true;
-    setVoiceStarted(true);
-    localStorage.removeItem("voice_flow_step");
-    setTimeout(() => {
-      speak(
-        "TERNKONNECT is an AI-powered intelligent assistive technology solution transforming how people with disabilities experience digital learning.",
-      );
-      flowStep.current = "ask-auth";
-    }, 300);
-  };
-
-  useEffect(() => {
-    const handler = () => startVoice();
-    document.addEventListener("click", handler, { once: true });
-    document.addEventListener("touchstart", handler, { once: true });
-    document.addEventListener("keydown", handler, { once: true });
-    return () => {
-      document.removeEventListener("click", handler);
-      document.removeEventListener("touchstart", handler);
-      document.removeEventListener("keydown", handler);
-    };
-  }, []);
-
-  // const { startRecognition } = useVoiceCommands(
-  //   [
-  //     {
-  //       command: /(get a demo|request a demo|demo)/i,
-  //       action: () => {
-  //         speak("Taking you to our contact page to request a demo.");
-  //         setTimeout(() => navigate("/contact"), 1200);
-  //       },
-  //     },
-  //     {
-  //       command: /(start free trial|free trial|trial)/i,
-  //       action: () => {
-  //         speak("Taking you to sign up for a free trial.");
-  //         setTimeout(() => navigate("/signup"), 1200);
-  //       },
-  //     },
-  //     {
-  //       command: /(log in|login|sign in)/i,
-  //       action: () => {
-  //         speak("Taking you to the login page.");
-  //         localStorage.setItem("voice_flow_step", "login-email");
-  //         localStorage.setItem("voice_flow_after_login", "ask-course");
-  //         setTimeout(() => navigate("/login"), 1200);
-  //       },
-  //     },
-  //     {
-  //       command: /(sign up|register|create account)/i,
-  //       action: () => {
-  //         speak("Taking you to the sign up page.");
-  //         localStorage.setItem("voice_flow_step", "signup-name");
-  //         setTimeout(() => navigate("/signup"), 1200);
-  //       },
-  //     },
-  //     {
-  //       command: /.+/,
-  //       action: (match) => {
-  //         if (flowStep.current !== "ask-course") return;
-  //         const transcript = (match?.[0] ?? "").toLowerCase();
-  //         const courses = coursesRef.current;
-  //         const found = courses.find(
-  //           (c) =>
-  //             c.title.toLowerCase().includes(transcript) ||
-  //             transcript.includes(
-  //               c.title.toLowerCase().split(" ").slice(0, 3).join(" "),
-  //             ),
-  //         );
-  //         if (found) {
-  //           speak(`Taking you to ${found.title}.`);
-  //           setTimeout(() => navigate(`/courses/${found.id}`), 1200);
-  //         } else {
-  //           speak(
-  //             `Sorry, I could not find that course. Please say the course name again.`,
-  //           );
-  //         }
-  //       },
-  //     },
-  //   ],
-  //   voiceStarted,
-  // );
-
-  const { startRecognition } = useVoiceCommands(
-    [
-
-      {
-        command: /(log in|login|sign in)/i,
-        action: () => {
-          speak("Taking you to the login page.");
-          localStorage.setItem("voice_flow_step", "login-email");
-          localStorage.setItem("voice_flow_after_login", "ask-course");
-          setTimeout(() => navigate("/login"), 1200);
-        },
-      },
-      {
-        command: /(sign up|register|create account)/i,
-        action: () => {
-          speak("Taking you to the sign up page.");
-          localStorage.setItem("voice_flow_step", "signup-name");
-          setTimeout(() => navigate("/signup"), 1200);
-        },
-      },
-      {
-        command: /.+/,
-        action: (match) => {
-          if (flowStep.current !== "ask-course") return;
-          const transcript = (match?.[0] ?? "").toLowerCase();
-          const courses = coursesRef.current;
-          const found = courses.find(
-            (c) =>
-              c.title.toLowerCase().includes(transcript) ||
-              transcript.includes(
-                c.title.toLowerCase().split(" ").slice(0, 3).join(" "),
-              ),
-          );
-          if (found) {
-            speak(`Taking you to ${found.title}.`);
-            setTimeout(() => navigate(`/courses/${found.id}`), 1200);
-          } else {
-            speak(
-              `Sorry, I could not find that course. Please say the course name again.`,
-            );
-          }
-        },
-      },
-    ],
-    voiceStarted,
-  );
-
-  const displayCourses = featuredCourses.filter((c) => c.category === activeTab);
-  const coursesToShow = displayCourses.length > 0 ? displayCourses : featuredCourses.slice(0, 4);
+  const displayCourses = featuredCourses.slice(0, 6);
 
   return (
     <MainLayout>
-      {/* ── Hero Split Layout ── */}
-      <section className="relative overflow-hidden bg-background pt-16 md:pt-24 pb-12">
-        <div className="container max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8 text-center lg:text-left z-10">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1]">
-                Expand Your Horizons with <span className="text-gradient">Accessible Learning</span>
-              </h1>
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-                Master new skills, advance your career, and learn from industry experts with our inclusive, AI-powered platform.
-              </p>
-              
-              <form onSubmit={handleSearch} className="flex w-full max-w-lg mx-auto lg:mx-0 gap-2 shadow-sm">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    placeholder="What do you want to learn today?"
-                    className="pl-10 h-14 text-base border-2 focus-visible:ring-primary"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="h-14 px-8 text-base font-semibold gradient-primary text-white border-0">
-                  Search
-                </Button>
-              </form>
-            </div>
-            
-            <div className="relative hidden lg:block h-[500px]">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-3xl transform rotate-3 scale-105"></div>
-              <img
-                src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80"
-                alt="African students studying"
-                className="absolute inset-0 w-full h-full object-cover rounded-3xl shadow-2xl"
-              />
-            </div>
-          </div>
+      <div className="academy-page">
+
+
+  {/* HERO */}
+  <section className="hero" aria-labelledby="hero-heading">
+    <div className="hero-content">
+      <p className="hero-eyebrow">Ternkonnect Digital Inclusive Academy</p>
+      <h1 id="hero-heading">
+        Learn Without<br /><em>Barriers.</em><br />Thrive Without Limits.
+      </h1>
+      <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed mb-8">
+        An inclusive learning platform equipping persons with disabilities with digital skills and career opportunities — while helping educators build classrooms where every learner succeeds.
+      </p>
+      <div className="hero-actions">
+        <Button asChild size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"><a href="#learners">Start Learning →</a></Button>
+        <Button asChild variant="outline" size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-transparent border-2 border-purple-600 text-purple-600 dark:border-purple-400 dark:text-purple-400 hover:bg-purple-600/10 dark:hover:bg-purple-400/10 shadow-md hover:shadow-lg transition-all duration-300"><a href="#educators">Teach for Inclusion</a></Button>
+      </div>
+    </div>
+    <div className="hero-visual" aria-hidden="true">
+      <div className="hero-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
+          alt="Diverse group of students collaborating and learning together"
+          loading="eager"
+        />
+      </div>
+      <div className="absolute -bottom-6 -left-6 bg-background/90 backdrop-blur-xl border border-border/50 shadow-2xl p-5 rounded-2xl max-w-[220px] z-10 flex flex-col gap-1.5 transform transition-transform hover:-translate-y-1">
+        <div className="flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-wider">
+          <Check className="h-4 w-4" /> Accessibility First
         </div>
-      </section>
+        <span className="text-muted-foreground text-sm leading-tight">Every course, every learner</span>
+      </div>
+    </div>
+  </section>
 
-      {/* ── Logo Cloud ── */}
-      <section className="border-y bg-muted/20 py-10">
-        <div className="container max-w-7xl mx-auto px-4 text-center">
-          <p className="text-sm font-semibold text-muted-foreground mb-6 uppercase tracking-wider">
-            Trusted by our forward-thinking clients
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-            <h3 className="text-2xl font-bold font-serif">DWS</h3>
-            <h3 className="text-2xl font-bold font-mono">JobMingles</h3>
-            <h3 className="text-2xl font-bold tracking-widest">Erilearn</h3>
-          </div>
+  {/* STATS */}
+  <div className="stats-strip" role="region" aria-label="Key statistics">
+    <div className="stat-item">
+      <div className="stat-num">500+</div>
+      <div className="stat-label">Learners on Waitlist</div>
+    </div>
+    <div className="stat-item">
+      <div className="stat-num">7</div>
+      <div className="stat-label">Skill Tracks</div>
+    </div>
+    <div className="stat-item">
+      <div className="stat-num">2</div>
+      <div className="stat-label">Learner Pathways</div>
+    </div>
+    <div className="stat-item">
+      <div className="stat-num">100%</div>
+      <div className="stat-label">Accessible Design</div>
+    </div>
+  </div>
+
+  {/* PARTNERS */}
+  <section className="py-12 bg-background border-b border-border/50 overflow-hidden">
+    <div className="container px-6">
+      <p className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-8">Our Partners</p>
+      <div className="flex justify-center items-center opacity-70 hover:opacity-100 transition-opacity duration-300">
+        <img src="/images/wagetech.png" alt="Wagetech Logo" className="h-20 md:h-24 object-contain filter grayscale hover:grayscale-0 transition-all duration-300" />
+      </div>
+    </div>
+  </section>
+
+  {/* FOR LEARNERS */}
+  <section className="for-learners" id="learners" aria-labelledby="learners-heading">
+    <p className="section-eyebrow">For Learners</p>
+    <h2 className="section-title" id="learners-heading">Learn Digital Skills That Open Doors</h2>
+    <p className="section-sub">Accessible, practical, and inclusive — our programmes are built around how you learn, not how others expect you to.</p>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mt-12">
+      <div className="rounded-2xl overflow-hidden shadow-2xl relative aspect-square">
+        <img
+          src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80"
+          alt="Group of diverse learners working on laptops together"
+          loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+      </div>
+      <div>
+        <h3 className="font-heading text-3xl font-bold mb-4 text-foreground">What You'll Gain</h3>
+        <p className="text-lg text-muted-foreground mb-8">Everything you need to enter, grow, and thrive in the digital economy.</p>
+        <ul role="list" className="mt-8">
+          <li className="flex items-start gap-4 mb-6">
+            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1"><Check className="h-5 w-5 text-primary" /></span>
+            <span className="text-lg text-foreground leading-relaxed"><strong>Learn digital skills</strong> — practical, in-demand, and accessible from day one</span>
+          </li>
+          <li className="flex items-start gap-4 mb-6">
+            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1"><Check className="h-5 w-5 text-primary" /></span>
+            <span className="text-lg text-foreground leading-relaxed"><strong>Real-world projects</strong> and portfolio development to showcase your abilities</span>
+          </li>
+          <li className="flex items-start gap-4 mb-6">
+            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1"><Check className="h-5 w-5 text-primary" /></span>
+            <span className="text-lg text-foreground leading-relaxed"><strong>Career readiness support</strong> — employability coaching and job placement pathways</span>
+          </li>
+          <li className="flex items-start gap-4 mb-6">
+            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1"><Check className="h-5 w-5 text-primary" /></span>
+            <span className="text-lg text-foreground leading-relaxed"><strong>Freelancing & entrepreneurship</strong> opportunities to work on your own terms</span>
+          </li>
+          <li className="flex items-start gap-4 mb-6">
+            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-1"><Check className="h-5 w-5 text-primary" /></span>
+            <span className="text-lg text-foreground leading-relaxed"><strong>Access to internships and jobs</strong> through our partner network</span>
+          </li>
+        </ul>
+        <div className="cta-inline">
+          <Button asChild size="lg" className="rounded-full px-10 py-7 text-lg font-bold mt-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"><a href="#join">Learn. Work. Thrive. <span className="ml-2 text-xl">→</span></a></Button>
         </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
-      {/* ── Value Proposition ── */}
-      <section className="py-16 md:py-24">
-        <div className="container max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-2xl bg-card border hover:shadow-lg transition-shadow text-center md:text-left">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                <GraduationCap className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Learn from experts</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Gain real-world skills from industry leaders and professionals who are passionate about teaching.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-card border hover:shadow-lg transition-shadow text-center md:text-left">
-              <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                <Users className="h-6 w-6 text-secondary" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Accessible to everyone</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Our platform features built-in assistive technologies ensuring an inclusive experience for all learners.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-card border hover:shadow-lg transition-shadow text-center md:text-left">
-              <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                <Award className="h-6 w-6 text-accent" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Earn certificates</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Showcase your new skills with verifiable certificates that you can share with employers and your network.
-              </p>
-            </div>
-          </div>
+  {/* FOR EDUCATORS */}
+  <section className="for-educators" id="educators" aria-labelledby="educators-heading">
+    <p className="section-eyebrow">For Educators</p>
+    <h2 className="section-title" id="educators-heading">Build Classrooms That Work for Everyone</h2>
+    <p className="section-sub">Develop the knowledge, tools, and confidence to create inclusive learning environments where every student can thrive.</p>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mt-12">
+      <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6" role="list">
+          <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4" role="listitem">
+    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><UserCheck className="h-6 w-6 text-primary" /></div>
+    <h4 className="font-heading font-bold text-foreground text-lg leading-snug">Disability Awareness & Inclusive Education</h4>
+  </div>
+          <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4" role="listitem">
+    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><Monitor className="h-6 w-6 text-primary" /></div>
+    <h4 className="font-heading font-bold text-foreground text-lg leading-snug">Assistive Technology for Teaching</h4>
+  </div>
+          <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4" role="listitem">
+    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><FileText className="h-6 w-6 text-primary" /></div>
+    <h4 className="font-heading font-bold text-foreground text-lg leading-snug">Accessible Content Creation</h4>
+  </div>
+          <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4" role="listitem">
+    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><Target className="h-6 w-6 text-primary" /></div>
+    <h4 className="font-heading font-bold text-foreground text-lg leading-snug">Inclusive Teaching Strategies</h4>
+  </div>
+          <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4" role="listitem">
+    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><School className="h-6 w-6 text-primary" /></div>
+    <h4 className="font-heading font-bold text-foreground text-lg leading-snug">Leadership for Inclusive Institutions</h4>
+  </div>
+          <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4" role="listitem">
+    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><GraduationCap className="h-6 w-6 text-primary" /></div>
+    <h4 className="font-heading font-bold text-foreground text-lg leading-snug">Recognized Certification</h4>
+  </div>
         </div>
-      </section>
-
-      {/* ── Broad Selection Tabs ── */}
-      <section className="py-16 bg-muted/30 border-y">
-        <div className="container max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-extrabold mb-4">A broad selection of courses</h2>
-          <p className="text-muted-foreground text-lg mb-8 max-w-3xl">
-            Choose from over 100 online courses with new additions published every month.
-          </p>
-          
-          <div className="flex overflow-x-auto pb-4 mb-6 hide-scrollbar gap-2">
-            {CATEGORIES.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveTab(category)}
-                className={`px-5 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap transition-all ${
-                  activeTab === category 
-                    ? "bg-foreground text-background shadow-md" 
-                    : "bg-card text-muted-foreground hover:bg-muted border"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          <div className="bg-card border p-6 md:p-8 rounded-3xl shadow-sm">
-            <h3 className="text-2xl font-bold mb-2">Expand your career opportunities with {activeTab}</h3>
-            <p className="text-muted-foreground mb-8 max-w-4xl">
-              Whether you're looking to start a new career or advance in your current field, our {activeTab} courses will give you the skills you need to succeed.
-            </p>
-            
-            {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} className="h-[320px] rounded-xl" />
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {coursesToShow.map((course) => (
-                  <CourseCard key={course.id} course={course} />
-                ))}
-              </div>
-            )}
-            
-            <div className="mt-8">
-              <Link to={`/courses?category=${encodeURIComponent(activeTab)}`}>
-                <Button variant="outline" className="font-semibold px-8">
-                  Explore {activeTab}
-                </Button>
-              </Link>
-            </div>
-          </div>
+        <div className="cta-inline" style={{"marginTop":"2rem"}}>
+          <Button asChild size="lg" className="rounded-full px-10 py-7 text-lg font-bold mt-8 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"><a href="#join">Teach for Inclusion <span className="ml-2 text-xl">→</span></a></Button>
         </div>
-      </section>
+      </div>
+      <div className="rounded-2xl overflow-hidden shadow-2xl relative aspect-square lg:order-first">
+        <img
+          src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80"
+          alt="Educator working with a diverse group of students in an inclusive classroom"
+          loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+      </div>
+    </div>
+  </section>
 
-      {/* ── Testimonials ── */}
-      <section className="py-20 md:py-24">
-        <div className="container max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-extrabold mb-12 text-center">
-            How learners like you are achieving their goals
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t) => (
-              <Card key={t.id} className="border-0 shadow-lg bg-card/50 backdrop-blur-sm relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
-                <CardContent className="p-8 space-y-6">
-                  <div className="flex gap-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 fill-yellow-400 text-yellow-400"
-                      />
-                    ))}
+  {/* WHY TERNKONNECT */}
+  <section className="why" id="why" aria-labelledby="why-heading">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16">
+      <div>
+        <p className="section-eyebrow">Why Ternkonnect Academy?</p>
+        <h2 className="section-title" id="why-heading">Designed Around the Learner, Not the System</h2>
+        <p className="section-sub">Five pillars that make Ternkonnect different — and keep our learners coming back.</p>
+      </div>
+      <div className="rounded-2xl overflow-hidden shadow-2xl relative aspect-video lg:aspect-auto lg:h-[400px]">
+        <img
+          src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+          alt="Collaborative team working on inclusive digital projects"
+          loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+      </div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
+      <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-md transition-all" role="listitem">
+    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6"><UserCheck className="h-7 w-7 text-primary" /></div>
+    <h3 className="font-heading font-bold text-xl text-foreground mb-3">Accessibility First</h3>
+    <p className="text-muted-foreground text-base leading-relaxed">Every course is designed to be accessible and inclusive for diverse learners — from the ground up, not as an afterthought.</p>
+  </div>
+      <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-md transition-all" role="listitem">
+    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6"><Wrench className="h-7 w-7 text-primary" /></div>
+    <h3 className="font-heading font-bold text-xl text-foreground mb-3">Practical Learning</h3>
+    <p className="text-muted-foreground text-base leading-relaxed">Gain skills that can be applied immediately in education, employment, and entrepreneurship — real work, real impact.</p>
+  </div>
+      <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-md transition-all" role="listitem">
+    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6"><Handshake className="h-7 w-7 text-primary" /></div>
+    <h3 className="font-heading font-bold text-xl text-foreground mb-3">Personalized Support</h3>
+    <p className="text-muted-foreground text-base leading-relaxed">Access learning accommodations, assistive technologies, and one-on-one guidance tailored to your needs.</p>
+  </div>
+      <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-md transition-all" role="listitem">
+    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6"><Briefcase className="h-7 w-7 text-primary" /></div>
+    <h3 className="font-heading font-bold text-xl text-foreground mb-3">Career & Economic Pathways</h3>
+    <p className="text-muted-foreground text-base leading-relaxed">Connect learning with real employment, freelancing opportunities, and business development support.</p>
+  </div>
+      <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-md transition-all" role="listitem">
+    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6"><Award className="h-7 w-7 text-primary" /></div>
+    <h3 className="font-heading font-bold text-xl text-foreground mb-3">Recognized Certification</h3>
+    <p className="text-muted-foreground text-base leading-relaxed">Earn certificates that credibly showcase your skills and achievements to employers and partners.</p>
+  </div>
+      <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-sm hover:shadow-md transition-all" role="listitem">
+    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6"><Globe className="h-7 w-7 text-primary" /></div>
+    <h3 className="font-heading font-bold text-xl text-foreground mb-3">Community-Led Growth</h3>
+    <p className="text-muted-foreground text-base leading-relaxed">Learn alongside a growing network of inclusive learners, educators, and organizations across Nigeria.</p>
+  </div>
+    </div>
+  </section>
+
+  {/* WHO WE SERVE */}
+  <section className="who-serve" aria-labelledby="serve-heading">
+    <p className="section-eyebrow">Who We Serve</p>
+    <h2 className="section-title" id="serve-heading">Built for Learners and Leaders Alike</h2>
+    <p className="section-sub">Whether you're building your career or building more inclusive institutions — there's a place for you here.</p>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-lg overflow-hidden flex flex-col hover:shadow-xl transition-shadow">
+        <div className="aspect-[4/3] w-full relative">
+          <img
+            src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=700&q=80"
+            alt="Young person using assistive technology on a computer"
+            loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+        </div>
+        <div className="p-8 md:p-10 flex-1 bg-card">
+          <h3 className="font-heading font-bold text-2xl text-foreground mb-6">Learners</h3>
+          <ul className="flex flex-col gap-4" role="list">
+            <li className="flex items-center gap-3 text-lg text-foreground"><span className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>Persons with visual impairments</li>
+            <li className="flex items-center gap-3 text-lg text-foreground"><span className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>Persons with hearing impairments</li>
+            <li className="flex items-center gap-3 text-lg text-foreground"><span className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>Persons with learning disabilities</li>
+            <li className="flex items-center gap-3 text-lg text-foreground"><span className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>Youth seeking digital opportunities</li>
+          </ul>
+        </div>
+      </div>
+      <div className="bg-card rounded-2xl border border-border/50 shadow-lg overflow-hidden flex flex-col hover:shadow-xl transition-shadow">
+        <div className="aspect-[4/3] w-full relative">
+          <img
+            src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=700&q=80"
+            alt="Educators collaborating in a professional training setting"
+            loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+        </div>
+        <div className="p-8 md:p-10 flex-1 bg-card">
+          <h3 className="font-heading font-bold text-2xl text-foreground mb-6">Educators & Organizations</h3>
+          <ul className="flex flex-col gap-4" role="list">
+            <li className="flex items-center gap-3 text-lg text-foreground"><span className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>Teachers and trainers</li>
+            <li className="flex items-center gap-3 text-lg text-foreground"><span className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>School leaders and administrators</li>
+            <li className="flex items-center gap-3 text-lg text-foreground"><span className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>Educational institutions</li>
+            <li className="flex items-center gap-3 text-lg text-foreground"><span className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span>NGOs and disability-focused organizations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+          {/* COURSES */}
+        <section id="courses" style={{"background":"var(--white)","padding":"6rem 6rem"}} aria-labelledby="courses-heading">
+          <p className="section-eyebrow">Our Courses</p>
+          <h2 className="section-title" id="courses-heading">Find Your Learning Path</h2>
+          <p className="section-sub">Two pathways, one mission — every course is accessible, practical, and built for real outcomes.</p>
+
+          <div className="course-panel active mt-8">
+            <div className="course-grid">
+              {loading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="course-card p-4">
+                    <div className="h-24 bg-muted animate-pulse rounded-md mb-4"></div>
+                    <div className="h-6 bg-muted animate-pulse w-3/4 mb-2"></div>
+                    <div className="h-4 bg-muted animate-pulse w-full"></div>
                   </div>
-                  <p className="text-base text-foreground leading-relaxed italic">
-                    "{t.quote}"
-                  </p>
-                  <div className="flex items-center gap-4 pt-4 border-t border-border/50">
-                    <img
-                      src={t.avatar}
-                      alt={t.name}
-                      className="h-12 w-12 rounded-full ring-2 ring-primary/20"
-                    />
-                    <div>
-                      <p className="font-bold text-foreground">{t.name}</p>
-                      <p className="text-sm text-muted-foreground">{t.role}</p>
+                ))
+              ) : (
+                displayCourses.map((course) => (
+                  <div key={course.id} className="course-card">
+                    <div className="course-card-top" style={{"background":"linear-gradient(135deg,#6B5CE7,#00B8A9)"}}>
+                      <span className="course-icon"><BookOpen className="h-8 w-8 text-[hsl(var(--primary-foreground))]" /></span>
+                    </div>
+                    <div className="course-card-body">
+                      <div className="course-meta">
+                        <span className="badge-level beginner">{course.level || "Beginner"}</span>
+                        <span className="badge-format">{course.duration || "Self-Paced"}</span>
+                      </div>
+                      <h3>{course.title}</h3>
+                      <p>{course.description?.substring(0, 80)}...</p>
+                      <div className="course-footer">
+                        <span>⏱ {course.duration || "4 Weeks"}</span>
+                        <Link to={`/courses/${course.id}`} className="course-cta">Enrol →</Link>
+                      </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                ))
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+  {/* MISSION */}
+  <section className="mission" aria-labelledby="mission-heading">
+    <p className="section-eyebrow" style={{"color":"var(--text-muted)","justifyContent":"center"}}>Our Mission</p>
+    <p className="text-2xl md:text-4xl font-heading font-extrabold text-foreground leading-snug max-w-4xl mx-auto text-center mb-10">
+      To create a world where <span className="text-primary">disability is never a barrier</span> to learning, employment, or opportunity — by providing accessible education, assistive technology, and pathways to economic empowerment.
+    </p>
+    <div className="flex justify-center mt-8">
+      <Button asChild size="lg" className="rounded-full px-10 py-7 text-lg font-extrabold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+        <a href="#join">Join the Movement <span className="ml-2 text-xl">→</span></a>
+      </Button>
+    </div>
+  </section>
 
-      {/* ── Instructor Banner ── */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-indigo-900 via-slate-900 to-black text-white">
-        <div className="container max-w-5xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-5xl font-extrabold mb-6">Become an Instructor</h2>
-          <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Instructors from around the world teach millions of learners on our platform. We provide the tools and skills to teach what you love.
-          </p>
-          <Link to="/instructor-signup">
-            <Button size="lg" className="bg-white text-black hover:bg-gray-100 font-bold px-10 h-14 text-lg">
-              Start Teaching Today
-            </Button>
-          </Link>
-        </div>
-      </section>
+  {/* ASSISTIVE TOOLS */}
+  <section style={{"background":"var(--white)", "color":"var(--ink)"}} id="assistive-tools" aria-labelledby="tools-heading">
+    <p className="section-eyebrow" style={{"color":"var(--teal)"}}>Ternkonnect Assistive Tools</p>
+    <h2 className="section-title" id="tools-heading" style={{"color":"var(--ink)"}}>Technology That Removes the Barrier</h2>
+    <p className="section-sub" style={{"color":"rgba(255,255,255,0.65)"}}>Our built-in assistive tools ensure every learner can access, engage with, and complete their training — regardless of disability type.</p>
+    <div style={{"display":"grid","gridTemplateColumns":"repeat(3,1fr)","gap":"1.5rem","marginTop":"3rem"}}>
+      <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"><div style={{"marginBottom":"1rem"}}><Volume2 className="h-12 w-12 text-primary" /></div><h3 className="font-heading text-lg font-bold mb-2 text-foreground">Screen Reader Support</h3><p className="text-base text-muted-foreground leading-relaxed">Full compatibility with NVDA, JAWS, and VoiceOver so visually impaired learners navigate every course.</p></div>
+      <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"><div style={{"marginBottom":"1rem"}}><MessageSquare className="h-12 w-12 text-primary" /></div><h3 className="font-heading text-lg font-bold mb-2 text-foreground">Closed Captions &amp; Transcripts</h3><p className="text-base text-muted-foreground leading-relaxed">Every video includes accurate captions and downloadable transcripts for deaf and hard-of-hearing learners.</p></div>
+      <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"><div style={{"marginBottom":"1rem"}}><Type className="h-12 w-12 text-primary" /></div><h3 className="font-heading text-lg font-bold mb-2 text-foreground">Adjustable Reading Tools</h3><p className="text-base text-muted-foreground leading-relaxed">Font size, spacing, dyslexia-friendly typefaces, and high-contrast modes for learners with reading disabilities.</p></div>
+      <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"><div style={{"marginBottom":"1rem"}}><Keyboard className="h-12 w-12 text-primary" /></div><h3 className="font-heading text-lg font-bold mb-2 text-foreground">Keyboard-Only Navigation</h3><p className="text-base text-muted-foreground leading-relaxed">Every feature is fully accessible by keyboard alone — no mouse required.</p></div>
+      <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"><div style={{"marginBottom":"1rem"}}><Brain className="h-12 w-12 text-primary" /></div><h3 className="font-heading text-lg font-bold mb-2 text-foreground">Cognitive Load Controls</h3><p className="text-base text-muted-foreground leading-relaxed">Simplified layouts, chunked content, and progress checkpoints designed for neurodivergent learners.</p></div>
+      <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"><div style={{"marginBottom":"1rem"}}><Smartphone className="h-12 w-12 text-primary" /></div><h3 className="font-heading text-lg font-bold mb-2 text-foreground">Mobile-First Access</h3><p className="text-base text-muted-foreground leading-relaxed">Optimised for low-bandwidth mobile devices, ensuring access beyond desktop environments.</p></div>
+    </div>
+  </section>
+
+  {/* IMPACT */}
+  <section style={{"background":"var(--grey)", "color":"var(--ink)"}} id="impact" aria-labelledby="impact-heading">
+    <p className="section-eyebrow">Impact</p>
+    <h2 className="section-title" id="impact-heading">Changing Lives, One Learner at a Time</h2>
+    <p className="section-sub">Real outcomes for real people — across Nigeria and beyond.</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+      <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">500+</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Learners on Waitlist</div></div>
+      <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">7</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Digital Skill Tracks</div></div>
+      <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">3+</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Institutional Pilot Partners</div></div>
+      <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">100%</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Accessibility Compliant</div></div>
+    </div>
+    <div className="mt-12 bg-card rounded-2xl p-8 md:p-12 border-l-4 border-primary shadow-sm border border-border/50">
+      <p className="font-heading text-xl md:text-2xl font-bold leading-relaxed text-foreground mb-4">"Ternkonnect gave me a pathway into tech that actually worked with my disability — not around it."</p>
+      <p className="text-base text-muted-foreground">— Early learner, Data Entry &amp; Virtual Assistance cohort</p>
+    </div>
+  </section>
+
+  {/* OUR STORY */}
+  <section style={{"background":"var(--white)", "color":"var(--ink)"}} id="about" aria-labelledby="about-heading">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div>
+        <p className="section-eyebrow">Our Story</p>
+        <h2 className="section-title" id="about-heading">Built From the Ground Up — With Inclusion at the Core</h2>
+        <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6">Ternkonnect was founded on a simple but urgent belief: that disability should never determine someone's access to education, employment, or economic opportunity. In Nigeria, millions of persons with disabilities are locked out of the digital economy — not because of their abilities, but because the systems were not designed for them.</p>
+        <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6">We started Ternkonnect to change that — with accessible digital skills training, assistive technology, and direct pathways to jobs and entrepreneurship. We work with learners, educators, schools, and NGOs to build an ecosystem where inclusion is the standard, not the exception.</p>
+        <p className="text-muted-foreground text-base md:text-lg leading-relaxed">We are pre-launch and growing fast — with institutional pilots underway and a community of learners ready to begin.</p>
+      </div>
+      <div style={{"borderRadius":"20px","overflow":"hidden","aspectRatio":"4/5"}}><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&amp;q=80" alt="Diverse team collaborating on inclusive digital education" loading="lazy" style={{"width":"100%","height":"100%","objectFit":"cover"}} /></div>
+    </div>
+  </section>
+
+  {/* JOIN CTA */}
+  <section className="join" id="join" aria-labelledby="join-heading">
+    <div className="join-img">
+      <img
+        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80"
+        alt="Diverse group of professionals working together on digital skills"
+        loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+    </div>
+    <div className="join-content">
+      <p className="section-eyebrow">Join the Academy</p>
+      <h2 className="section-title" id="join-heading">Your Journey Starts Here</h2>
+      <p>
+        Whether you're looking to build digital skills, access career opportunities, or create more inclusive learning environments — Ternkonnect Digital Inclusive Academy is here to support your journey.
+      </p>
+      <div className="join-actions">
+        <Button asChild size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"><a href="#learners">I'm a Learner →</a></Button>
+        <Button asChild variant="outline" size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-transparent border-2 border-purple-600 text-purple-600 dark:border-purple-400 dark:text-purple-400 hover:bg-purple-600/10 dark:hover:bg-purple-400/10 shadow-md hover:shadow-lg transition-all duration-300"><a href="#educators">I'm an Educator</a></Button>
+      </div>
+    </div>
+  </section>
+
+
+      </div>
     </MainLayout>
   );
 };
-
 export default Index;
