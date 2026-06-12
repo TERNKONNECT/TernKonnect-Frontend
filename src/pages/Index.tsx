@@ -271,46 +271,7 @@ const Index = () => {
   </section>
 
 
-          {/* COURSES */}
-        <section id="courses" style={{"background":"var(--white)","padding":"6rem 6rem"}} aria-labelledby="courses-heading">
-          <p className="section-eyebrow">Our Courses</p>
-          <h2 className="section-title" id="courses-heading">Find Your Learning Path</h2>
-          <p className="section-sub">Two pathways, one mission — every course is accessible, practical, and built for real outcomes.</p>
-
-          <div className="course-panel active mt-8">
-            <div className="course-grid">
-              {loading ? (
-                Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="course-card p-4">
-                    <div className="h-24 bg-muted animate-pulse rounded-md mb-4"></div>
-                    <div className="h-6 bg-muted animate-pulse w-3/4 mb-2"></div>
-                    <div className="h-4 bg-muted animate-pulse w-full"></div>
-                  </div>
-                ))
-              ) : (
-                displayCourses.map((course) => (
-                  <div key={course.id} className="course-card">
-                    <div className="course-card-top" style={{"background":"linear-gradient(135deg,#6B5CE7,#00B8A9)"}}>
-                      <span className="course-icon"><BookOpen className="h-8 w-8 text-[hsl(var(--primary-foreground))]" /></span>
-                    </div>
-                    <div className="course-card-body">
-                      <div className="course-meta">
-                        <span className="badge-level beginner">{course.level || "Beginner"}</span>
-                        <span className="badge-format">{course.duration || "Self-Paced"}</span>
-                      </div>
-                      <h3>{course.title}</h3>
-                      <p>{course.description?.substring(0, 80)}...</p>
-                      <div className="course-footer">
-                        <span>⏱ {course.duration || "4 Weeks"}</span>
-                        <Link to={`/courses/${course.id}`} className="course-cta">Enrol →</Link>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </section>
+          {/* COURSES SECTION REMOVED */}
   {/* MISSION */}
   <section className="mission" aria-labelledby="mission-heading">
     <p className="section-eyebrow" style={{"color":"var(--text-muted)","justifyContent":"center"}}>Our Mission</p>
