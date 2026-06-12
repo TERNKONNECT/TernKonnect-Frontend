@@ -50,7 +50,7 @@ const Index = () => {
         <div className="hero-visual animate-fade-up delay-400 relative z-10" aria-hidden="true">
       <div className="hero-img-wrap">
         <img
-          src="https://images.unsplash.com/photo-1634954238233-3d1445638a0e?w=800&q=80"
+          src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80"
           alt="Diverse team collaborating on inclusive digital education"
           loading="eager"
         />
@@ -374,7 +374,7 @@ const Index = () => {
   <section className="join" id="join" aria-labelledby="join-heading">
     <div className="join-img">
       <img
-        src="https://images.unsplash.com/photo-1540302819037-abacaf0f1e1e?w=800&q=80"
+        src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80"
         alt="Diverse group of professionals working together on digital skills"
         loading="lazy" />
     </div>
