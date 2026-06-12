@@ -45,7 +45,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
           <div className="hidden md:flex items-center gap-3">
             <Link to="/instructor-signup">
-              <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary/10">
+              <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                 Become an Instructor
               </Button>
             </Link>
@@ -114,7 +114,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             ))}
             <div className="pt-3 border-t space-y-2">
               <Link to="/instructor-signup" onClick={() => setMobileOpen(false)}>
-                <Button variant="outline" size="sm" className="w-full justify-start border-primary text-primary hover:bg-primary/10 mb-2">
+                <Button variant="outline" size="sm" className="w-full justify-start border-primary text-primary hover:bg-primary hover:text-primary-foreground mb-2">
                   Become an Instructor
                 </Button>
               </Link>
