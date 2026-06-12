@@ -22,6 +22,7 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState<"learner" | "educator">("learner");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const signup = useAuthStore((s) => s.signup);
@@ -153,6 +154,7 @@ const Signup = () => {
               collectedRef.current.name,
               collectedRef.current.email,
               password,
+              userType
             );
             speak("Your account has been created. Welcome to Ternkonnect!");
             navigate("/");
@@ -203,6 +205,7 @@ const Signup = () => {
                   collectedRef.current.name,
                   collectedRef.current.email,
                   pwd,
+                  userType
                 );
                 speak("Your account has been created. Welcome to Ternkonnect!");
                 navigate("/");
@@ -277,7 +280,7 @@ const Signup = () => {
     }
     setLoading(true);
     try {
-      const message = await signup(name, email, password);
+      const message = await signup(name, email, password, userType);
       toast({
         title: "Check your email",
         description: message,
@@ -362,6 +365,35 @@ const Signup = () => {
                 </button>
               </div>
             </div>
+            
+            <div className="space-y-2">
+              <Label>I am a:</Label>
+              <div className="flex gap-4 mt-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="userType"
+                    value="learner"
+                    checked={userType === "learner"}
+                    onChange={(e) => setUserType(e.target.value as "learner")}
+                    className="accent-primary"
+                  />
+                  <span>Learner</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="userType"
+                    value="educator"
+                    checked={userType === "educator"}
+                    onChange={(e) => setUserType(e.target.value as "educator")}
+                    className="accent-primary"
+                  />
+                  <span>Educator</span>
+                </label>
+              </div>
+            </div>
+
             <Button
               type="submit"
               className="w-full gradient-primary border-0 text-white"

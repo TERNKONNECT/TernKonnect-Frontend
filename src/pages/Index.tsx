@@ -44,7 +44,7 @@ const Index = () => {
           </p>
           <div className="hero-actions animate-fade-up delay-300">
             <a href="#learners" className="btn-primary">Start Learning →</a>
-            <a href="#educators" className="btn-secondary">Teach for Inclusion</a>
+            {/* <a href="#educators" className="btn-secondary">Teach for Inclusion</a> */}
           </div>
         </div>
         <div className="hero-visual animate-fade-up delay-400 relative z-10" aria-hidden="true">
@@ -81,7 +81,7 @@ const Index = () => {
     <div className="container px-6">
       <p className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-8">Our Partners</p>
       <div className="flex justify-center items-center opacity-70 hover:opacity-100 transition-opacity duration-300">
-        <img src="/images/wagetech.png" alt="Wagetech Logo" className="h-20 md:h-24 object-contain filter grayscale hover:grayscale-0 transition-all duration-300" />
+        <img src="/wagetech.png" alt="Wagetech Logo" className="h-20 md:h-24 object-contain mix-blend-multiply filter grayscale hover:grayscale-0 transition-all duration-300" />
       </div>
     </div>
   </section>
@@ -344,12 +344,14 @@ const Index = () => {
     <p className="section-eyebrow">Impact</p>
     <h2 className="section-title" id="impact-heading">Changing Lives, One Learner at a Time</h2>
     <p className="section-sub">Real outcomes for real people — across Nigeria and beyond.</p>
+    {/* 
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
       <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">500+</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Learners on Waitlist</div></div>
       <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">7</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Digital Skill Tracks</div></div>
       <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">3+</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Institutional Pilot Partners</div></div>
       <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">100%</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Accessibility Compliant</div></div>
     </div>
+    */}
     <div className="mt-8 bg-card rounded-2xl p-8 md:p-12 border-l-4 border-primary shadow-sm border border-border/50">
       <p className="font-heading text-xl md:text-2xl font-bold leading-relaxed text-foreground mb-4">"Ternkonnect gave me a pathway into tech that actually worked with my disability — not around it."</p>
       <p className="text-base text-muted-foreground">— Early learner, Data Entry &amp; Virtual Assistance cohort</p>
@@ -386,7 +388,7 @@ const Index = () => {
       </p>
       <div className="join-actions">
         <Button asChild size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"><a href="#learners">I'm a Learner →</a></Button>
-        <Button asChild variant="outline" size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-transparent border-2 border-purple-600 text-purple-600 dark:border-purple-400 dark:text-purple-400 hover:bg-purple-600/10 dark:hover:bg-purple-400/10 shadow-md hover:shadow-lg transition-all duration-300"><a href="#educators">I'm an Educator</a></Button>
+        {/* <Button asChild variant="outline" size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-transparent border-2 border-purple-600 text-purple-600 dark:border-purple-400 dark:text-purple-400 hover:bg-purple-600/10 dark:hover:bg-purple-400/10 shadow-md hover:shadow-lg transition-all duration-300"><a href="#educators">I'm an Educator</a></Button> */}
       </div>
     </div>
   </section>

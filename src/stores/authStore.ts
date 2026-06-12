@@ -12,7 +12,7 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  signup: (name: string, email: string, password: string) => Promise<boolean>;
+  signup: (name: string, email: string, password: string, userType: "learner" | "educator") => Promise<boolean>;
   instructorSignup: (name: string, email: string, password: string) => Promise<string>;
   logout: () => void;
 }
@@ -41,6 +41,7 @@ export const useAuthStore = create<AuthState>()(
           avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${data.user.name}`,
           joinedAt: data.user.createdAt,
           role: data.user.role || "user",
+          userType: data.user.userType || "learner",
         };
 
         set({ user, token: data.token, isAuthenticated: true });
@@ -54,11 +55,11 @@ export const useAuthStore = create<AuthState>()(
         return true;
       },
 
-      signup: async (name: string, email: string, password: string) => {
+      signup: async (name: string, email: string, password: string, userType: "learner" | "educator") => {
         const res = await fetch(`${API_URL}/api/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
+          body: JSON.stringify({ name, email, password, userType }),
         });
 
         const data = await res.json();
@@ -71,6 +72,7 @@ export const useAuthStore = create<AuthState>()(
           avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${data.user.name}`,
           joinedAt: data.user.createdAt,
           role: data.user.role || "user",
+          userType: data.user.userType || "learner",
         };
 
         set({ user, token: data.token, isAuthenticated: true });

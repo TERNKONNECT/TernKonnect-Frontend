@@ -124,19 +124,30 @@ const mapQuiz = (q: any, courseId: string): Quiz => ({
 
 export const api = {
   // Fetch all courses from backend, fall back to mock
-  getCourses: async (): Promise<Course[]> => {
+  getCourses: async (targetAudience?: string): Promise<Course[]> => {
     try {
-      const res = await fetch(`${API_URL}/api/courses`, {
+      const url = new URL(`${API_URL}/api/courses`);
+      if (targetAudience) url.searchParams.set("targetAudience", targetAudience);
+
+      const res = await fetch(url.toString(), {
         headers: authHeaders(),
       });
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
       const backendCourses = data.map(mapBackendCourse);
-      // merge with mock courses so mock data still works
-      return [...backendCourses, ...courses];
+      
+      let filteredMock = courses;
+      if (targetAudience && targetAudience !== "all") {
+        filteredMock = filteredMock.filter(c => !c.targetAudience || c.targetAudience === targetAudience || c.targetAudience === "both");
+      }
+      return [...backendCourses, ...filteredMock];
     } catch {
       await delay(300);
-      return courses;
+      let filteredMock = courses;
+      if (targetAudience && targetAudience !== "all") {
+        filteredMock = filteredMock.filter(c => !c.targetAudience || c.targetAudience === targetAudience || c.targetAudience === "both");
+      }
+      return filteredMock;
     }
   },
 
@@ -248,8 +259,9 @@ export const api = {
   searchCourses: async (
     query: string,
     category?: string,
+    targetAudience?: string,
   ): Promise<Course[]> => {
-    const all = await api.getCourses();
+    const all = await api.getCourses(targetAudience);
     let filtered = all;
     if (query) {
       const q = query.toLowerCase();

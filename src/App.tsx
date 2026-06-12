@@ -56,7 +56,7 @@ import AdminProfile from "./pages/admin/AdminProfile";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme" attribute="class">
+  <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme" attribute="class">
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AuthProvider>

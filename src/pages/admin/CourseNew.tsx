@@ -33,6 +33,7 @@ const courseSchema = z.object({
   difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
   status: z.enum(["draft", "published"]),
   pricingType: z.enum(["free", "paid"]),
+  targetAudience: z.enum(["learner", "educator", "both"]),
   price: z.coerce.number().min(0, "Price cannot be negative"),
 }).refine((data) => data.pricingType === "free" || data.price > 0, {
   message: "Paid courses need a price",
@@ -53,6 +54,7 @@ const CourseNew = () => {
       difficulty: "Beginner",
       status: "draft",
       pricingType: "free",
+      targetAudience: "both",
       price: 0,
     },
   });
@@ -222,7 +224,31 @@ const CourseNew = () => {
                   )}
                 />
               </div>
-              <div className="flex gap-3 pt-4">
+
+              <FormField
+                control={form.control}
+                name="targetAudience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Target Audience</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select target audience" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="both">Both (Everyone)</SelectItem>
+                        <SelectItem value="learner">Learners Only</SelectItem>
+                        <SelectItem value="educator">Educators Only</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex justify-end gap-4 mt-8">
                 <Button type="submit" disabled={loading}>
                   {loading ? "Creating..." : "Create Course"}
                 </Button>

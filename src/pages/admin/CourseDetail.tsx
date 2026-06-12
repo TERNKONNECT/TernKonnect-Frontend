@@ -36,6 +36,7 @@ const courseSchema = z.object({
   difficulty: z.string().min(1),
   status: z.enum(["draft", "published"]),
   pricingType: z.enum(["free", "paid"]),
+  targetAudience: z.enum(["learner", "educator", "both"]),
   price: z.coerce.number().min(0),
 }).refine((data) => data.pricingType === "free" || data.price > 0, {
   message: "Paid courses need a price",
@@ -72,6 +73,7 @@ const CourseDetail = () => {
           difficulty: c.difficulty || "Beginner",
           status: c.status,
           pricingType: (c as any).pricingType ?? "free",
+          targetAudience: (c as any).targetAudience ?? "both",
           price: Number((c as any).price || 0),
         });
       })
@@ -186,15 +188,6 @@ const CourseDetail = () => {
               onChange={(e) => setThumbnailFile(e.target.files?.[0] ?? null)}
             />
           </label>
-          {/* {thumbnailFile && (
-            <Button
-              size="sm"
-              onClick={handleUploadThumbnail}
-              disabled={uploadingThumb}
-            >
-              {uploadingThumb ? "Uploading..." : "Upload"}
-            </Button>
-          )} */}
 
           {thumbnailFile && (
             <div className="space-y-2">
@@ -358,6 +351,30 @@ const CourseDetail = () => {
                   )}
                 />
               </div>
+
+              <FormField
+                control={form.control}
+                name="targetAudience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Target Audience</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select target audience" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="both">Both (Everyone)</SelectItem>
+                        <SelectItem value="learner">Learners Only</SelectItem>
+                        <SelectItem value="educator">Educators Only</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <div className="flex gap-3 pt-4">
                 <Button type="submit" disabled={saving}>
                   {saving ? "Saving..." : "Save Changes"}
