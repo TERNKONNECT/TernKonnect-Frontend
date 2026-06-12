@@ -11,6 +11,7 @@ import CourseCard from '@/components/CourseCard';
 import { api } from '@/services/api';
 import { CATEGORIES } from '@/types';
 import type { Course } from '@/types';
+import { useAuthStore } from '@/stores/authStore';
 
 const Courses = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,17 +19,20 @@ const Courses = () => {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const { user } = useAuthStore();
+  const [targetAudience, setTargetAudience] = useState(searchParams.get('audience') || user?.userType || 'all');
 
   useEffect(() => {
     setLoading(true);
-    api.searchCourses(query, selectedCategory || undefined).then((c) => { setCourses(c); setLoading(false); });
-  }, [query, selectedCategory]);
+    api.searchCourses(query, selectedCategory || undefined, targetAudience).then((c) => { setCourses(c); setLoading(false); });
+  }, [query, selectedCategory, targetAudience]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (query) params.set('q', query);
     if (selectedCategory) params.set('category', selectedCategory);
+    if (targetAudience && targetAudience !== "all") params.set('audience', targetAudience);
     setSearchParams(params);
   };
 
@@ -38,6 +42,16 @@ const Courses = () => {
     const params = new URLSearchParams();
     if (query) params.set('q', query);
     if (next) params.set('category', next);
+    if (targetAudience && targetAudience !== "all") params.set('audience', targetAudience);
+    setSearchParams(params);
+  };
+
+  const handleAudienceChange = (aud: string) => {
+    setTargetAudience(aud);
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (selectedCategory) params.set('category', selectedCategory);
+    if (aud !== "all") params.set('audience', aud);
     setSearchParams(params);
   };
 
@@ -62,7 +76,28 @@ const Courses = () => {
           </form>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap items-center gap-4 mb-8">
+          <div className="flex bg-muted rounded-lg p-1">
+            <button
+              onClick={() => handleAudienceChange('all')}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${targetAudience === 'all' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              All Courses
+            </button>
+            <button
+              onClick={() => handleAudienceChange('learner')}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${targetAudience === 'learner' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              For Learners
+            </button>
+            <button
+              onClick={() => handleAudienceChange('educator')}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${targetAudience === 'educator' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              For Educators
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((cat) => (
             <Badge
               key={cat}
@@ -78,6 +113,7 @@ const Courses = () => {
               ✕ Clear filter
             </Badge>
           )}
+        </div>
         </div>
 
         {loading ? (

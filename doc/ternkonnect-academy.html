@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ternkonnect Digital Inclusive Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+  /* ── TOKENS ────────────────────────────────────────── */
+  :root {
+    --ink:       #0D0B2A;
+    --purple:    #6B5CE7;
+    --soft-purple: #EDE9FF;
+    --teal:      #00B8A9;
+    --teal-light:#E0FAF8;
+    --amber:     #F5A623;
+    --white:     #FFFFFF;
+    --grey:      #F4F3FA;
+    --text-muted:#6B6886;
+    --radius:    16px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    background: var(--white);
+    line-height: 1.65;
+    font-size: 16px;
+  }
+
+  img { display: block; width: 100%; }
+
+  a { color: inherit; text-decoration: none; }
+
+  h1, h2, h3, h4 {
+    font-family: 'Syne', sans-serif;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  /* ── SKIP LINK (accessibility) ──────────────────────── */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 1rem;
+    background: var(--purple);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    z-index: 9999;
+    transition: top .2s;
+  }
+  .skip-link:focus { top: 1rem; }
+
+  /* ── NAV ────────────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,11,42,0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(107,92,231,0.25);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo span {
+    display: inline-block;
+    width: 32px; height: 32px;
+    background: var(--purple);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+  .nav-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.72);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color .2s;
+  }
+  .nav-links a:hover, .nav-links a:focus { color: #fff; }
+  .nav-cta {
+    background: var(--purple);
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 600 !important;
+    transition: background .2s !important;
+  }
+  .nav-cta:hover { background: #5849d4 !important; }
+
+  /* ── HERO ───────────────────────────────────────────── */
+  .hero {
+    background: var(--ink);
+    color: #fff;
+    min-height: 92vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 3rem;
+    padding: 5rem 6rem 5rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* signature element: large rotated wordmark watermark */
+  .hero::before {
+    content: 'INCLUSIVE';
+    position: absolute;
+    bottom: -2rem;
+    right: -3rem;
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(5rem, 14vw, 12rem);
+    font-weight: 800;
+    color: rgba(107,92,231,0.07);
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1.5rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 2px;
+    background: var(--teal);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: #fff;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--purple);
+    background: linear-gradient(135deg, #6B5CE7, #00B8A9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.72);
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    line-height: 1.75;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--purple);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: background .2s, transform .15s;
+    cursor: pointer;
+    border: none;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: #5849d4; transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    transition: border-color .2s, background .2s;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { border-color: #fff; background: rgba(255,255,255,0.06); }
+
+  /* Hero image side */
+  .hero-visual {
+    position: relative;
+  }
+  .hero-img-wrap {
+    border-radius: 24px;
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    position: relative;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  }
+  .hero-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .hero-badge {
+    position: absolute;
+    bottom: -1.5rem; left: -1.5rem;
+    background: var(--teal);
+    color: var(--ink);
+    padding: 1rem 1.4rem;
+    border-radius: var(--radius);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 12px 32px rgba(0,184,169,0.35);
+    max-width: 160px;
+    line-height: 1.3;
+  }
+  .hero-badge span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+
+  /* ── STATS STRIP ─────────────────────────────────────── */
+  .stats-strip {
+    background: var(--soft-purple);
+    padding: 2.5rem 6rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    border-bottom: 1px solid rgba(107,92,231,0.12);
+  }
+  .stat-item {
+    text-align: center;
+    padding: 1rem;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--purple);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* ── SECTION WRAPPERS ────────────────────────────────── */
+  section { padding: 6rem 6rem; }
+
+  .section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 1rem;
+  }
+  .section-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 2px;
+    background: var(--purple);
+  }
+
+  .section-title {
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+    max-width: 600px;
+  }
+  .section-sub {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 540px;
+    line-height: 1.75;
+  }
+
+  /* ── FOR LEARNERS ─────────────────────────────────────── */
+  .for-learners {
+    background: var(--grey);
+  }
+  .learners-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3.5rem;
+  }
+  .learners-img {
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    position: relative;
+  }
+  .learners-img img { width: 100%; height: 100%; object-fit: cover; }
+  .learners-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13,11,42,0.5) 0%, transparent 60%);
+    border-radius: 20px;
+  }
+
+  .gains-list {
+    list-style: none;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .gains-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 1rem;
+  }
+  .check-icon {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    background: var(--purple);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 900;
+  }
+
+  .cta-inline {
+    margin-top: 2.5rem;
+  }
+
+  /* ── FOR EDUCATORS ─────────────────────────────────────── */
+  .for-educators {
+    background: var(--ink);
+    color: #fff;
+  }
+  .for-educators .section-eyebrow { color: var(--teal); }
+  .for-educators .section-eyebrow::before { background: var(--teal); }
+  .for-educators .section-title { color: #fff; }
+  .for-educators .section-sub { color: rgba(255,255,255,0.65); }
+
+  .educators-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3.5rem;
+  }
+  .edu-img {
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 1;
+  }
+  .edu-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .edu-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .edu-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    transition: background .2s, border-color .2s;
+  }
+  .edu-card:hover {
+    background: rgba(107,92,231,0.1);
+    border-color: rgba(107,92,231,0.4);
+  }
+  .edu-card-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.6rem;
+  }
+  .edu-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  /* ── WHY TERNKONNECT ──────────────────────────────────── */
+  .why {
+    background: var(--white);
+  }
+  .why-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: 3.5rem;
+  }
+  .why-img {
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+  }
+  .why-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .pillar-card {
+    background: var(--grey);
+    border-radius: var(--radius);
+    padding: 2rem 1.6rem;
+    border: 1px solid transparent;
+    transition: border-color .2s, transform .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .pillar-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--purple);
+    border-radius: 4px 0 0 4px;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .pillar-card:hover { border-color: var(--soft-purple); transform: translateY(-3px); }
+  .pillar-card:hover::before { opacity: 1; }
+
+  .pillar-icon {
+    width: 44px; height: 44px;
+    background: var(--soft-purple);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+  }
+  .pillar-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .pillar-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── WHO WE SERVE ─────────────────────────────────────── */
+  .who-serve {
+    background: var(--soft-purple);
+  }
+  .serve-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    margin-top: 3rem;
+  }
+  .serve-card {
+    background: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(107,92,231,0.08);
+  }
+  .serve-card-img {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+  .serve-card-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .4s;
+  }
+  .serve-card:hover .serve-card-img img { transform: scale(1.04); }
+  .serve-card-body {
+    padding: 1.8rem;
+  }
+  .serve-card-body h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .serve-tag-list {
+    display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  .serve-tag {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.92rem;
+    color: var(--ink);
+  }
+  .serve-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--purple);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── MISSION ──────────────────────────────────────────── */
+  .mission {
+    background: var(--purple);
+    color: #fff;
+    text-align: center;
+    padding: 7rem 10rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .mission::before {
+    content: '✦';
+    position: absolute;
+    font-size: 28rem;
+    opacity: 0.04;
+    top: -8rem; left: -4rem;
+    pointer-events: none;
+    user-select: none;
+    font-family: serif;
+    line-height: 1;
+  }
+  .mission-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.45;
+    max-width: 760px;
+    margin: 0 auto 2.5rem;
+  }
+  .mission-text em {
+    font-style: normal;
+    color: var(--teal);
+  }
+
+  /* ── JOIN CTA ─────────────────────────────────────────── */
+  .join {
+    background: var(--ink);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    color: #fff;
+  }
+  .join-img {
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+  }
+  .join-img img { width: 100%; height: 100%; object-fit: cover; }
+  .join-content .section-eyebrow { color: var(--amber); }
+  .join-content .section-eyebrow::before { background: var(--amber); }
+  .join-content .section-title { color: #fff; max-width: 420px; }
+  .join-content p {
+    color: rgba(255,255,255,0.7);
+    font-size: 1rem;
+    line-height: 1.75;
+    margin-bottom: 2rem;
+  }
+  .join-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  /* ── FOOTER ───────────────────────────────────────────── */
+  footer {
+    background: #060513;
+    color: rgba(255,255,255,0.5);
+    padding: 3rem 6rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.8rem;
+  }
+  .footer-tagline {
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  footer h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+  footer ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  footer ul li a {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.45);
+    transition: color .2s;
+  }
+  footer ul li a:hover { color: #fff; }
+  .footer-bottom {
+    grid-column: 1 / -1;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 0.8rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-mantra {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── RESPONSIVE ───────────────────────────────────────── */
+  @media (max-width: 1024px) {
+    section { padding: 4rem 3rem; }
+    .hero { padding: 4rem 3rem; gap: 2rem; }
+    .stats-strip { padding: 2rem 3rem; }
+    .mission { padding: 5rem 3rem; }
+    .join { padding: 4rem 3rem; }
+    footer { padding: 2.5rem 3rem; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 3rem 1.5rem;
+      min-height: unset;
+      text-align: center;
+    }
+    .hero-actions { justify-content: center; }
+    .hero-visual { display: none; }
+    .stats-strip { grid-template-columns: 1fr 1fr; padding: 2rem 1.5rem; }
+    section { padding: 3.5rem 1.5rem; }
+    .learners-grid, .educators-grid, .serve-grid, .join {
+      grid-template-columns: 1fr; gap: 2rem;
+    }
+    .why-header { grid-template-columns: 1fr; }
+    .pillars { grid-template-columns: 1fr 1fr; }
+    .edu-cards { grid-template-columns: 1fr 1fr; }
+    .mission { padding: 4rem 1.5rem; }
+    footer { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
+    .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .pillars { grid-template-columns: 1fr; }
+    .edu-cards { grid-template-columns: 1fr; }
+  }
+
+  /* ── REDUCED MOTION ───────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ── FOCUS STYLES ─────────────────────────────────────── */
+  :focus-visible {
+    outline: 3px solid var(--teal);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ── COURSES TABS ─────────────────────────────────────── */
+  .courses-tabs {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 2px solid var(--grey);
+    padding-bottom: 0;
+  }
+  .course-tab {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    border-radius: 0;
+    transition: color .2s, border-color .2s;
+  }
+  .course-tab:hover { color: var(--purple); }
+  .course-tab.active {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+  .course-panel { display: none; }
+  .course-panel.active { display: block; }
+
+  /* ── COURSE GRID ─────────────────────────────────────── */
+  .course-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .course-card {
+    background: var(--white);
+    border: 1px solid rgba(107,92,231,0.12);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(107,92,231,0.12);
+  }
+  .course-card-top {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .course-icon { font-size: 2.4rem; }
+  .course-card-body { padding: 1.4rem; }
+  .course-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .badge-level, .badge-format {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge-level.beginner { background: var(--teal-light); color: #007a72; }
+  .badge-level.intermediate { background: var(--soft-purple); color: var(--purple); }
+  .badge-level.advanced { background: #FFF3DC; color: #b07800; }
+  .badge-format { background: var(--grey); color: var(--text-muted); }
+  .course-card-body h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+  .course-card-body p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .course-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--grey);
+    padding-top: 0.8rem;
+  }
+  .course-cta {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--purple);
+    transition: color .2s;
+  }
+  .course-cta:hover { color: #4a3cb5; }
+
+  @media (max-width: 900px) {
+    .course-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 580px) {
+    .course-grid { grid-template-columns: 1fr; }
+    .courses-tabs { flex-direction: column; border-bottom: none; gap: 0.5rem; }
+    .course-tab { border: 1.5px solid var(--grey); border-radius: var(--radius-sm); border-bottom: 1.5px solid var(--grey); margin-bottom: 0; }
+    .course-tab.active { border-color: var(--purple); background: var(--soft-purple); }
+  }
+
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="#" class="nav-logo" aria-label="Ternkonnect Academy home">
+    <span aria-hidden="true">T</span>
+    Ternkonnect Academy
+  </a>
+  <ul class="nav-links" role="list">
+    <li><a href="#learners">Learners</a></li>
+    <li><a href="#educators">Educators</a></li>
+    <li><a href="#assistive-tools">Assistive Tools</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#join" class="nav-cta">Join Now</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Ternkonnect Digital Inclusive Academy</p>
+      <h1 id="hero-heading">
+        Learn Without<br /><em>Barriers.</em><br />Thrive Without Limits.
+      </h1>
+      <p class="hero-sub">
+        An inclusive learning platform equipping persons with disabilities with digital skills and career opportunities — while helping educators build classrooms where every learner succeeds.
+      </p>
+      <div class="hero-actions">
+        <a href="#learners" class="btn-primary">Start Learning →</a>
+        <a href="#educators" class="btn-secondary">Teach for Inclusion</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=700&q=80"
+          alt="Person using a laptop in a bright, inclusive workspace"
+          loading="eager"
+        />
+      </div>
+      <div class="hero-badge">
+        Accessibility First
+        <span>Every course, every learner</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-strip" role="region" aria-label="Key statistics">
+    <div class="stat-item">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Learners on Waitlist</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Skill Tracks</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Learner Pathways</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Accessible Design</div>
+    </div>
+  </div>
+
+  <!-- FOR LEARNERS -->
+  <section class="for-learners" id="learners" aria-labelledby="learners-heading">
+    <p class="section-eyebrow">For Learners</p>
+    <h2 class="section-title" id="learners-heading">Learn Digital Skills That Open Doors</h2>
+    <p class="section-sub">Accessible, practical, and inclusive — our programmes are built around how you learn, not how others expect you to.</p>
+
+    <div class="learners-grid">
+      <div class="learners-img">
+        <img
+          src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80"
+          alt="Group of diverse learners working on laptops together"
+          loading="lazy"
+        />
+      </div>
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;">What You'll Gain</h3>
+        <p style="color:var(--text-muted);font-size:0.95rem;">Everything you need to enter, grow, and thrive in the digital economy.</p>
+        <ul class="gains-list" role="list">
+          <li>
+            <span class="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Learn digital skills</strong> — practical, in-demand, and accessible from day one</span>
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Real-world projects</strong> and portfolio development to showcase your abilities</span>
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Career readiness support</strong> — employability coaching and job placement pathways</span>
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Freelancing & entrepreneurship</strong> opportunities to work on your own terms</span>
+          </li>
+          <li>
+            <span class="check-icon" aria-hidden="true">✓</span>
+            <span><strong>Access to internships and jobs</strong> through our partner network</span>
+          </li>
+        </ul>
+        <div class="cta-inline">
+          <a href="#join" class="btn-primary">Learn. Work. Thrive. →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR EDUCATORS -->
+  <section class="for-educators" id="educators" aria-labelledby="educators-heading">
+    <p class="section-eyebrow">For Educators</p>
+    <h2 class="section-title" id="educators-heading">Build Classrooms That Work for Everyone</h2>
+    <p class="section-sub">Develop the knowledge, tools, and confidence to create inclusive learning environments where every student can thrive.</p>
+
+    <div class="educators-grid">
+      <div>
+        <div class="edu-cards" role="list">
+          <div class="edu-card" role="listitem">
+            <div class="edu-card-icon">♿</div>
+            <h4>Disability Awareness & Inclusive Education</h4>
+          </div>
+          <div class="edu-card" role="listitem">
+            <div class="edu-card-icon">🖥️</div>
+            <h4>Assistive Technology for Teaching</h4>
+          </div>
+          <div class="edu-card" role="listitem">
+            <div class="edu-card-icon">📝</div>
+            <h4>Accessible Content Creation</h4>
+          </div>
+          <div class="edu-card" role="listitem">
+            <div class="edu-card-icon">🎯</div>
+            <h4>Inclusive Teaching Strategies</h4>
+          </div>
+          <div class="edu-card" role="listitem">
+            <div class="edu-card-icon">🏫</div>
+            <h4>Leadership for Inclusive Institutions</h4>
+          </div>
+          <div class="edu-card" role="listitem">
+            <div class="edu-card-icon">🎓</div>
+            <h4>Recognized Certification</h4>
+          </div>
+        </div>
+        <div class="cta-inline" style="margin-top:2rem;">
+          <a href="#join" class="btn-primary">Teach for Inclusion →</a>
+        </div>
+      </div>
+      <div class="edu-img">
+        <img
+          src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80"
+          alt="Educator working with a diverse group of students in an inclusive classroom"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY TERNKONNECT -->
+  <section class="why" id="why" aria-labelledby="why-heading">
+    <div class="why-header">
+      <div>
+        <p class="section-eyebrow">Why Ternkonnect Academy?</p>
+        <h2 class="section-title" id="why-heading">Designed Around the Learner, Not the System</h2>
+        <p class="section-sub">Five pillars that make Ternkonnect different — and keep our learners coming back.</p>
+      </div>
+      <div class="why-img">
+        <img
+          src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+          alt="Collaborative team working on inclusive digital projects"
+          loading="lazy"
+        />
+      </div>
+    </div>
+    <div class="pillars" role="list">
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-icon" aria-hidden="true">♿</div>
+        <h3>Accessibility First</h3>
+        <p>Every course is designed to be accessible and inclusive for diverse learners — from the ground up, not as an afterthought.</p>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-icon" aria-hidden="true">🛠️</div>
+        <h3>Practical Learning</h3>
+        <p>Gain skills that can be applied immediately in education, employment, and entrepreneurship — real work, real impact.</p>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-icon" aria-hidden="true">🤝</div>
+        <h3>Personalized Support</h3>
+        <p>Access learning accommodations, assistive technologies, and one-on-one guidance tailored to your needs.</p>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-icon" aria-hidden="true">💼</div>
+        <h3>Career & Economic Pathways</h3>
+        <p>Connect learning with real employment, freelancing opportunities, and business development support.</p>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-icon" aria-hidden="true">🏅</div>
+        <h3>Recognized Certification</h3>
+        <p>Earn certificates that credibly showcase your skills and achievements to employers and partners.</p>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-icon" aria-hidden="true">🌍</div>
+        <h3>Community-Led Growth</h3>
+        <p>Learn alongside a growing network of inclusive learners, educators, and organizations across Nigeria.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE SERVE -->
+  <section class="who-serve" aria-labelledby="serve-heading">
+    <p class="section-eyebrow">Who We Serve</p>
+    <h2 class="section-title" id="serve-heading">Built for Learners and Leaders Alike</h2>
+    <p class="section-sub">Whether you're building your career or building more inclusive institutions — there's a place for you here.</p>
+    <div class="serve-grid">
+      <div class="serve-card">
+        <div class="serve-card-img">
+          <img
+            src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=700&q=80"
+            alt="Young person using assistive technology on a computer"
+            loading="lazy"
+          />
+        </div>
+        <div class="serve-card-body">
+          <h3>Learners</h3>
+          <ul class="serve-tag-list" role="list">
+            <li class="serve-tag">Persons with visual impairments</li>
+            <li class="serve-tag">Persons with hearing impairments</li>
+            <li class="serve-tag">Persons with learning disabilities</li>
+            <li class="serve-tag">Youth seeking digital opportunities</li>
+          </ul>
+        </div>
+      </div>
+      <div class="serve-card">
+        <div class="serve-card-img">
+          <img
+            src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=700&q=80"
+            alt="Educators collaborating in a professional training setting"
+            loading="lazy"
+          />
+        </div>
+        <div class="serve-card-body">
+          <h3>Educators & Organizations</h3>
+          <ul class="serve-tag-list" role="list">
+            <li class="serve-tag">Teachers and trainers</li>
+            <li class="serve-tag">School leaders and administrators</li>
+            <li class="serve-tag">Educational institutions</li>
+            <li class="serve-tag">NGOs and disability-focused organizations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- COURSES -->
+  <section id="courses" style="background:var(--white);padding:6rem 6rem;" aria-labelledby="courses-heading">
+    <p class="section-eyebrow">Our Courses</p>
+    <h2 class="section-title" id="courses-heading">Find Your Learning Path</h2>
+    <p class="section-sub">Two pathways, one mission — every course is accessible, practical, and built for real outcomes.</p>
+
+    <!-- TABS -->
+    <div class="courses-tabs" role="tablist" aria-label="Course pathways" style="margin-top:2.5rem;">
+      <button
+        class="course-tab active"
+        role="tab"
+        aria-selected="true"
+        aria-controls="panel-learners"
+        id="tab-learners"
+        onclick="switchTab('learners')"
+      >
+        🎓 For Learners
+      </button>
+      <button
+        class="course-tab"
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-educators"
+        id="tab-educators"
+        onclick="switchTab('educators')"
+      >
+        🏫 For Educators
+      </button>
+    </div>
+
+    <!-- LEARNERS PANEL -->
+    <div id="panel-learners" role="tabpanel" aria-labelledby="tab-learners" class="course-panel active">
+      <div class="course-grid">
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#6B5CE7,#9b8df5);">
+            <span class="course-icon">📊</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level beginner">Beginner</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Data Entry & Virtual Assistance</h3>
+            <p>Learn to manage data, support teams remotely, and build a career as a virtual professional.</p>
+            <div class="course-footer"><span>⏱ 4 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#00B8A9,#00d4c3);">
+            <span class="course-icon">📱</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level beginner">Beginner</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Digital Marketing & Social Media</h3>
+            <p>Create content, grow audiences, and run campaigns for businesses across digital platforms.</p>
+            <div class="course-footer"><span>⏱ 6 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#F5A623,#f7c46a);">
+            <span class="course-icon">🎨</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level beginner">Beginner</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Graphic Design with Accessible Tools</h3>
+            <p>Design visuals using accessible software — including Canva and tools optimised for diverse users.</p>
+            <div class="course-footer"><span>⏱ 5 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#6B5CE7,#00B8A9);">
+            <span class="course-icon">🤖</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level intermediate">Intermediate</span><span class="badge-format">Self-Paced</span></div>
+            <h3>AI & Content Creation</h3>
+            <p>Use AI tools to write, design, and create content faster — and build a portfolio of real work.</p>
+            <div class="course-footer"><span>⏱ 4 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#0D0B2A,#3d3880);">
+            <span class="course-icon">🌐</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level beginner">Beginner</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Web Design Fundamentals</h3>
+            <p>Build simple, accessible websites using HTML, CSS, and beginner-friendly design tools.</p>
+            <div class="course-footer"><span>⏱ 6 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#00B8A9,#6B5CE7);">
+            <span class="course-icon">💼</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level intermediate">Intermediate</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Freelancing & Online Business</h3>
+            <p>Set up your freelance profile, find clients, price your services, and manage your income online.</p>
+            <div class="course-footer"><span>⏱ 4 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#F5A623,#6B5CE7);">
+            <span class="course-icon">📋</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level beginner">Beginner</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Microsoft Office & Productivity Tools</h3>
+            <p>Master Word, Excel, PowerPoint, and cloud tools to work efficiently in any professional setting.</p>
+            <div class="course-footer"><span>⏱ 3 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- EDUCATORS PANEL -->
+    <div id="panel-educators" role="tabpanel" aria-labelledby="tab-educators" class="course-panel" hidden>
+      <div class="course-grid">
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#00B8A9,#0D0B2A);">
+            <span class="course-icon">♿</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level beginner">Beginner</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Introduction to Disability Awareness</h3>
+            <p>Build foundational knowledge of disability types, inclusion principles, and rights-based approaches to education.</p>
+            <div class="course-footer"><span>⏱ 3 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#6B5CE7,#00B8A9);">
+            <span class="course-icon">🖥️</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level intermediate">Intermediate</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Assistive Technology for Classrooms</h3>
+            <p>Discover and apply tools like screen readers, speech-to-text, and captioning in everyday teaching practice.</p>
+            <div class="course-footer"><span>⏱ 4 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#F5A623,#00B8A9);">
+            <span class="course-icon">📝</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level intermediate">Intermediate</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Accessible Content & Curriculum Design</h3>
+            <p>Create learning materials that work for diverse learners — from accessible documents to inclusive lesson plans.</p>
+            <div class="course-footer"><span>⏱ 5 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#0D0B2A,#6B5CE7);">
+            <span class="course-icon">🎯</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level intermediate">Intermediate</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Inclusive Teaching Strategies</h3>
+            <p>Learn practical methods to differentiate instruction, support diverse learning needs, and foster belonging in your classroom.</p>
+            <div class="course-footer"><span>⏱ 4 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-card-top" style="background:linear-gradient(135deg,#6B5CE7,#F5A623);">
+            <span class="course-icon">🏫</span>
+          </div>
+          <div class="course-card-body">
+            <div class="course-meta"><span class="badge-level advanced">Advanced</span><span class="badge-format">Self-Paced</span></div>
+            <h3>Leadership for Inclusive Schools</h3>
+            <p>Equip school leaders with the frameworks, policies, and strategies to build institution-wide inclusive cultures.</p>
+            <div class="course-footer"><span>⏱ 6 Weeks</span><a href="#join" class="course-cta">Enrol →</a></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <section class="mission" aria-labelledby="mission-heading">
+    <p class="section-eyebrow" style="color:rgba(255,255,255,0.5);justify-content:center;">Our Mission</p>
+    <p class="mission-text" id="mission-heading">
+      To create a world where <em>disability is never a barrier</em> to learning, employment, or opportunity — by providing accessible education, assistive technology, and pathways to economic empowerment.
+    </p>
+    <a href="#join" class="btn-secondary" style="display:inline-flex;">Join the Movement →</a>
+  </section>
+
+  <!-- ASSISTIVE TOOLS -->
+  <section style="background:var(--ink);color:#fff;" id="assistive-tools" aria-labelledby="tools-heading">
+    <p class="section-eyebrow" style="color:var(--teal);">Ternkonnect Assistive Tools</p>
+    <h2 class="section-title" id="tools-heading" style="color:#fff;">Technology That Removes the Barrier</h2>
+    <p class="section-sub" style="color:rgba(255,255,255,0.65);">Our built-in assistive tools ensure every learner can access, engage with, and complete their training — regardless of disability type.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;">
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(107,92,231,0.25);border-radius:16px;padding:2rem;"><div style="font-size:2rem;margin-bottom:1rem;">🔊</div><h3 style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Screen Reader Support</h3><p style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.65;">Full compatibility with NVDA, JAWS, and VoiceOver so visually impaired learners navigate every course.</p></div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(107,92,231,0.25);border-radius:16px;padding:2rem;"><div style="font-size:2rem;margin-bottom:1rem;">💬</div><h3 style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Closed Captions &amp; Transcripts</h3><p style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.65;">Every video includes accurate captions and downloadable transcripts for deaf and hard-of-hearing learners.</p></div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(107,92,231,0.25);border-radius:16px;padding:2rem;"><div style="font-size:2rem;margin-bottom:1rem;">🖊️</div><h3 style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Adjustable Reading Tools</h3><p style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.65;">Font size, spacing, dyslexia-friendly typefaces, and high-contrast modes for learners with reading disabilities.</p></div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(107,92,231,0.25);border-radius:16px;padding:2rem;"><div style="font-size:2rem;margin-bottom:1rem;">⌨️</div><h3 style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Keyboard-Only Navigation</h3><p style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.65;">Every feature is fully accessible by keyboard alone — no mouse required.</p></div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(107,92,231,0.25);border-radius:16px;padding:2rem;"><div style="font-size:2rem;margin-bottom:1rem;">🧠</div><h3 style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Cognitive Load Controls</h3><p style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.65;">Simplified layouts, chunked content, and progress checkpoints designed for neurodivergent learners.</p></div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(107,92,231,0.25);border-radius:16px;padding:2rem;"><div style="font-size:2rem;margin-bottom:1rem;">📱</div><h3 style="font-family:Syne,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Mobile-First Access</h3><p style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.65;">Optimised for low-bandwidth mobile devices, ensuring access beyond desktop environments.</p></div>
+    </div>
+  </section>
+
+  <!-- IMPACT -->
+  <section style="background:var(--grey);" id="impact" aria-labelledby="impact-heading">
+    <p class="section-eyebrow">Impact</p>
+    <h2 class="section-title" id="impact-heading">Changing Lives, One Learner at a Time</h2>
+    <p class="section-sub">Real outcomes for real people — across Nigeria and beyond.</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem;">
+      <div style="background:#fff;border-radius:16px;padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(107,92,231,0.07);"><div style="font-family:Syne,sans-serif;font-size:2.8rem;font-weight:800;color:var(--purple);letter-spacing:-0.03em;">500+</div><div style="font-size:0.88rem;color:var(--text-muted);margin-top:6px;font-weight:500;">Learners on Waitlist</div></div>
+      <div style="background:#fff;border-radius:16px;padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(107,92,231,0.07);"><div style="font-family:Syne,sans-serif;font-size:2.8rem;font-weight:800;color:var(--purple);letter-spacing:-0.03em;">7</div><div style="font-size:0.88rem;color:var(--text-muted);margin-top:6px;font-weight:500;">Digital Skill Tracks</div></div>
+      <div style="background:#fff;border-radius:16px;padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(107,92,231,0.07);"><div style="font-family:Syne,sans-serif;font-size:2.8rem;font-weight:800;color:var(--purple);letter-spacing:-0.03em;">3+</div><div style="font-size:0.88rem;color:var(--text-muted);margin-top:6px;font-weight:500;">Institutional Pilot Partners</div></div>
+      <div style="background:#fff;border-radius:16px;padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(107,92,231,0.07);"><div style="font-family:Syne,sans-serif;font-size:2.8rem;font-weight:800;color:var(--purple);letter-spacing:-0.03em;">100%</div><div style="font-size:0.88rem;color:var(--text-muted);margin-top:6px;font-weight:500;">Accessibility Compliant</div></div>
+    </div>
+    <div style="margin-top:3rem;background:#fff;border-radius:20px;padding:3rem;border-left:4px solid var(--purple);box-shadow:0 4px 24px rgba(107,92,231,0.07);">
+      <p style="font-family:Syne,sans-serif;font-size:1.25rem;font-weight:700;line-height:1.5;color:var(--ink);margin-bottom:1rem;">"Ternkonnect gave me a pathway into tech that actually worked with my disability — not around it."</p>
+      <p style="font-size:0.88rem;color:var(--text-muted);">— Early learner, Data Entry &amp; Virtual Assistance cohort</p>
+    </div>
+  </section>
+
+  <!-- OUR STORY -->
+  <section style="background:var(--white);" id="about" aria-labelledby="about-heading">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+      <div>
+        <p class="section-eyebrow">Our Story</p>
+        <h2 class="section-title" id="about-heading">Built From the Ground Up — With Inclusion at the Core</h2>
+        <p style="color:var(--text-muted);font-size:1rem;line-height:1.8;margin-bottom:1.5rem;">Ternkonnect was founded on a simple but urgent belief: that disability should never determine someone's access to education, employment, or economic opportunity. In Nigeria, millions of persons with disabilities are locked out of the digital economy — not because of their abilities, but because the systems were not designed for them.</p>
+        <p style="color:var(--text-muted);font-size:1rem;line-height:1.8;margin-bottom:1.5rem;">We started Ternkonnect to change that — with accessible digital skills training, assistive technology, and direct pathways to jobs and entrepreneurship. We work with learners, educators, schools, and NGOs to build an ecosystem where inclusion is the standard, not the exception.</p>
+        <p style="color:var(--text-muted);font-size:1rem;line-height:1.8;">We are pre-launch and growing fast — with institutional pilots underway and a community of learners ready to begin.</p>
+      </div>
+      <div style="border-radius:20px;overflow:hidden;aspect-ratio:4/5;"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&amp;q=80" alt="Diverse team collaborating on inclusive digital education" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
+    </div>
+  </section>
+
+  <!-- JOIN CTA -->
+  <section class="join" id="join" aria-labelledby="join-heading">
+    <div class="join-img">
+      <img
+        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80"
+        alt="Diverse group of professionals working together on digital skills"
+        loading="lazy"
+      />
+    </div>
+    <div class="join-content">
+      <p class="section-eyebrow">Join the Academy</p>
+      <h2 class="section-title" id="join-heading">Your Journey Starts Here</h2>
+      <p>
+        Whether you're looking to build digital skills, access career opportunities, or create more inclusive learning environments — Ternkonnect Digital Inclusive Academy is here to support your journey.
+      </p>
+      <div class="join-actions">
+        <a href="#learners" class="btn-primary">I'm a Learner →</a>
+        <a href="#educators" class="btn-secondary">I'm an Educator</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer aria-label="Site footer">
+  <div>
+    <div class="footer-brand">Ternkonnect Digital Inclusive Academy</div>
+    <p class="footer-tagline">
+      Accessible education, assistive technology, and pathways to economic empowerment — for every learner.
+    </p>
+  </div>
+  <div>
+    <h4>Quick Links</h4>
+    <ul>
+      <li><a href="#learners">For Learners</a></li>
+      <li><a href="#educators">For Educators</a></li>
+      <li><a href="#why">Why Ternkonnect</a></li>
+      <li><a href="#join">Join Now</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Ternkonnect</h4>
+    <ul>
+      <li><a href="#">About Us</a></li>
+      <li><a href="#">Accessibility Statement</a></li>
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Ternkonnect. All rights reserved.</span>
+    <span class="footer-mantra">Learn. Include. Empower.</span>
+  </div>
+</footer>
+
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.course-tab').forEach(t => {
+    t.classList.remove('active');
+    t.setAttribute('aria-selected', 'false');
+  });
+  document.querySelectorAll('.course-panel').forEach(p => {
+    p.classList.remove('active');
+    p.hidden = true;
+  });
+  const tab = document.getElementById('tab-' + id);
+  const panel = document.getElementById('panel-' + id);
+  tab.classList.add('active');
+  tab.setAttribute('aria-selected', 'true');
+  panel.classList.add('active');
+  panel.hidden = false;
+}
+</script>
+
+</body>
+</html>

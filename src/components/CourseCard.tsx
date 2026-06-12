@@ -23,6 +23,13 @@ const CourseCard = ({ course }: { course: Course }) => {
             loading="lazy"
           />
         </div>
+        {course.targetAudience && course.targetAudience !== 'both' && (
+          <div className="absolute top-2 left-2 z-10">
+            <Badge variant="default" className="bg-primary/90 text-white backdrop-blur-sm text-[10px] uppercase tracking-wider">
+              For {course.targetAudience}s
+            </Badge>
+          </div>
+        )}
         <CardContent className="p-4 space-y-3">
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="text-xs">{course.category}</Badge>

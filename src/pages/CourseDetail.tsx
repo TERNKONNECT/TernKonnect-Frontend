@@ -326,7 +326,7 @@ const CourseDetail = () => {
           </div>
           <div className="flex flex-col gap-3">
             {enrolled ? (
-              <Card className="bg-white text-foreground">
+              <Card>
                 <CardContent className="p-6 space-y-4">
                   <h3 className="font-semibold">Your Progress</h3>
                   <Progress value={progressPct} className="h-2" />
@@ -344,7 +344,7 @@ const CourseDetail = () => {
                 </CardContent>
               </Card>
             ) : course.pricingType === "paid" ? (
-              <Card className="bg-white text-foreground">
+              <Card>
                 <CardContent className="p-6 space-y-4">
                   <h3 className="text-2xl font-bold">
                     {course.currency} {course.price?.toLocaleString()}
@@ -364,7 +364,7 @@ const CourseDetail = () => {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="bg-white text-foreground">
+              <Card>
                 <CardContent className="p-6 space-y-4">
                   <h3 className="text-2xl font-bold">Free</h3>
                   <Button

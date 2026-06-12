@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   role: "user" | "admin" | "super-admin" | "operator";
+  userType?: "learner" | "educator";
   avatar?: string;
   joinedAt: string;
 }
@@ -27,6 +28,8 @@ export interface Course {
   pricingType?: "free" | "paid";
   price?: number;
   currency?: string;
+  targetAudience?: "learner" | "educator" | "both";
+  targetAudience?: "learner" | "educator" | "both";
   hasAccess?: boolean;
 }
 
