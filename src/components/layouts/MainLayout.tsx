@@ -179,14 +179,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                   Courses
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/services"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Our Services
-                </Link>
-              </li>
+
               <li>
                 <a
                   href={import.meta.env.VITE_LANDING_PAGE_URL || "https://ternkonnect.com"}

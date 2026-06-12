@@ -31,7 +31,6 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import NotFound from "./pages/NotFound";
 import AccessibilityWidget from "./components/AccessibilityWidget";
 import About from "./pages/About";
-import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import GetStarted from "./pages/GetStarted";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -74,7 +73,6 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
-            <Route path="/services" element={<Services />} />
             <Route path="/get" element={<GetStarted />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route
