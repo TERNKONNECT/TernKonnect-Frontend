@@ -16,7 +16,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   const navLinks = [
     // { to: "/", label: "Home" },
-    { to: "/courses", label: "Explore Academy" },
+    { to: "/courses", label: "Courses" },
     { to: "/about", label: "About Us" },
     // { to: "/services", label: "Services" },
     // ...(isAuthenticated ? [{ to: "/my-learning", label: "My Learning" }] : []),
@@ -64,46 +64,20 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
               </>
             ) : (
               <>
-                {/* <Link to="/login">
+                <Link to="/login">
                   <Button variant="ghost" size="sm">
                     Log In
                   </Button>
-                </Link> */}
-
-                <Link to="/contact">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="gradient-primary border-0 text-white"
-                  >
-                    Get a Demo
-                  </Button>
-                </Link>
-                {/* <Button
-                  variant="ghost"
-                  size="sm"
-                  className="gradient-primary border-0 text-white"
-                >
-                  Start free trial
-                </Button> */}
-
-                <Link to="/get">
-                  <Button
-                    size="sm"
-                    className="gradient-primary border-0 text-white"
-                  >
-                    Start free trial
-                  </Button>
                 </Link>
 
-                {/* <Link to="/signup">
+                <Link to="/signup">
                   <Button
                     size="sm"
                     className="gradient-primary border-0 text-white"
                   >
                     Sign Up
                   </Button>
-                </Link> */}
+                </Link>
               </>
             )}
           </div>
@@ -202,7 +176,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                   to="/courses"
                   className="hover:text-foreground transition-colors"
                 >
-                  Explore Academy
+                  Courses
                 </Link>
               </li>
               <li>
@@ -213,14 +187,15 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                   Our Services
                 </Link>
               </li>
-
               <li>
-                <Link
-                  to="/my-learning"
+                <a
+                  href={import.meta.env.VITE_LANDING_PAGE_URL || "https://ternkonnect.com"}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-foreground transition-colors"
                 >
                   Explore TernKonnect
-                </Link>
+                </a>
               </li>
             </ul>
           </div>

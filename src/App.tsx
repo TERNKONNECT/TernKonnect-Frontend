@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminInvite from "./pages/AdminInvite";
+import InstructorSignup from "./pages/InstructorSignup";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MyLearning from "./pages/MyLearning";
@@ -62,10 +63,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Courses />} />
-            {/* <Route path="/" element={<Index />} /> */}
+            <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/instructor-signup" element={<InstructorSignup />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/admin-invite" element={<AdminInvite />} />
             <Route path="/contact" element={<Contact />} />

@@ -13,6 +13,7 @@ interface AuthState {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   signup: (name: string, email: string, password: string) => Promise<boolean>;
+  instructorSignup: (name: string, email: string, password: string) => Promise<string>;
   logout: () => void;
 }
 
@@ -81,6 +82,22 @@ export const useAuthStore = create<AuthState>()(
         useEnrollmentStore.getState().initForUser(user.id);
 
         return true;
+      },
+
+      instructorSignup: async (name: string, email: string, password: string) => {
+        const res = await fetch(`${API_URL}/api/auth/register-instructor`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Instructor signup failed");
+
+        // The user is created but email is not verified yet. 
+        // We do not auto-login because they must verify their email first.
+        // We just return the success message from the backend.
+        return data.message;
       },
 
       logout: () => {

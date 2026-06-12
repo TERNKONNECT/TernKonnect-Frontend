@@ -529,24 +529,7 @@ export default function Services() {
                 integrate our tools into your platform today.
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto flex-shrink-0">
-              <Link to="/contact" className="w-full sm:w-auto">
-                <Button
-                  variant="secondary"
-                  className="font-semibold text-sm w-full"
-                >
-                  Request a Demo
-                </Button>
-              </Link>
-              <Link to="/get">
-                <Button
-                  variant="outline"
-                  className="border-white text-black hover:bg-white/10 font-semibold text-sm w-full sm:w-auto"
-                >
-                  Start free trial
-                </Button>
-              </Link>
-            </div>
+
           </div>
         </div>
       </section>
