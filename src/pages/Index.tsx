@@ -50,7 +50,7 @@ const Index = () => {
         <div className="hero-visual animate-fade-up delay-400 relative z-10" aria-hidden="true">
       <div className="hero-img-wrap">
         <img
-          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
+          src="https://images.unsplash.com/photo-1634954238233-3d1445638a0e?w=800&q=80"
           alt="Diverse team collaborating on inclusive digital education"
           loading="eager"
         />
@@ -95,7 +95,7 @@ const Index = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mt-8">
       <div className="rounded-2xl overflow-hidden shadow-2xl relative aspect-square">
         <img
-          src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80"
+          src="https://images.unsplash.com/photo-1634936564306-8a905be6429a?w=800&q=80"
           alt="Group of diverse learners working on laptops together"
           loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
       </div>
@@ -171,7 +171,7 @@ const Index = () => {
       </div>
       <div className="rounded-2xl overflow-hidden shadow-2xl relative aspect-square lg:order-first">
         <img
-          src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80"
+          src="https://images.unsplash.com/photo-1617056239820-8ce90ba48193?w=800&q=80"
           alt="Educator working with a diverse group of students in an inclusive classroom"
           loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
       </div>
@@ -188,7 +188,7 @@ const Index = () => {
       </div>
       <div className="rounded-2xl overflow-hidden shadow-2xl relative aspect-video lg:aspect-auto lg:h-[400px]">
         <img
-          src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+          src="https://images.unsplash.com/photo-1541178735493-479c1a27ed24?w=800&q=80"
           alt="Collaborative team working on inclusive digital projects"
           loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
       </div>
@@ -236,7 +236,7 @@ const Index = () => {
       <div className="bg-card rounded-2xl border border-border/50 shadow-lg overflow-hidden flex flex-col hover:shadow-xl transition-shadow">
         <div className="aspect-[4/3] w-full relative">
           <img
-            src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=700&q=80"
+            src="https://images.unsplash.com/photo-1623743995364-03fbd84dbaf3?w=700&q=80"
             alt="Young person using assistive technology on a computer"
             loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
         </div>
@@ -253,7 +253,7 @@ const Index = () => {
       <div className="bg-card rounded-2xl border border-border/50 shadow-lg overflow-hidden flex flex-col hover:shadow-xl transition-shadow">
         <div className="aspect-[4/3] w-full relative">
           <img
-            src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=700&q=80"
+            src="https://images.unsplash.com/photo-1526253038957-bce54e05968e?w=700&q=80"
             alt="Educators collaborating in a professional training setting"
             loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
         </div>
@@ -366,7 +366,7 @@ const Index = () => {
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6">We started Ternkonnect to change that — with accessible digital skills training, assistive technology, and direct pathways to jobs and entrepreneurship. We work with learners, educators, schools, and NGOs to build an ecosystem where inclusion is the standard, not the exception.</p>
         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">We are pre-launch and growing fast — with institutional pilots underway and a community of learners ready to begin.</p>
       </div>
-      <div style={{"borderRadius":"20px","overflow":"hidden","aspectRatio":"4/5"}}><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&amp;q=80" alt="Diverse team collaborating on inclusive digital education" loading="lazy" style={{"width":"100%","height":"100%","objectFit":"cover"}} /></div>
+      <div style={{"borderRadius":"20px","overflow":"hidden","aspectRatio":"4/5"}}><img src="https://images.unsplash.com/photo-1634951401794-6c84f593db82?w=800&amp;q=80" alt="African student learning digital skills" loading="lazy" style={{"width":"100%","height":"100%","objectFit":"cover"}} /></div>
     </div>
   </section>
 
@@ -374,7 +374,7 @@ const Index = () => {
   <section className="join" id="join" aria-labelledby="join-heading">
     <div className="join-img">
       <img
-        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80"
+        src="https://images.unsplash.com/photo-1540302819037-abacaf0f1e1e?w=800&q=80"
         alt="Diverse group of professionals working together on digital skills"
         loading="lazy" />
     </div>
