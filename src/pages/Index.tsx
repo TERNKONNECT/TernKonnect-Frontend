@@ -31,56 +31,50 @@ const Index = () => {
 
 
   {/* HERO */}
-  <section className="hero" aria-labelledby="hero-heading">
-    <div className="hero-content">
-      <p className="hero-eyebrow">Ternkonnect Digital Inclusive Academy</p>
-      <h1 id="hero-heading">
-        Learn Without<br /><em>Barriers.</em><br />Thrive Without Limits.
-      </h1>
-      <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed mb-8">
-        An inclusive learning platform equipping persons with disabilities with digital skills and career opportunities — while helping educators build classrooms where every learner succeeds.
-      </p>
-      <div className="hero-actions">
-        <Button asChild size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"><a href="#learners">Start Learning →</a></Button>
-        <Button asChild variant="outline" size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-transparent border-2 border-purple-600 text-purple-600 dark:border-purple-400 dark:text-purple-400 hover:bg-purple-600/10 dark:hover:bg-purple-400/10 shadow-md hover:shadow-lg transition-all duration-300"><a href="#educators">Teach for Inclusion</a></Button>
-      </div>
-    </div>
-    <div className="hero-visual" aria-hidden="true">
+      <section className="hero" aria-labelledby="hero-heading">
+        <div className="hero-glow-1"></div>
+        <div className="hero-glow-2"></div>
+        <div className="hero-content relative z-10">
+          <p className="hero-eyebrow animate-fade-up">Ternkonnect Digital Inclusive Academy</p>
+          <h1 id="hero-heading" className="animate-fade-up delay-100">
+            Learn Without<br /><em>Barriers.</em><br />Thrive Without Limits.
+          </h1>
+          <p className="hero-sub animate-fade-up delay-200">
+            An inclusive learning platform equipping persons with disabilities with digital skills and career opportunities — while helping educators build classrooms where every learner succeeds.
+          </p>
+          <div className="hero-actions animate-fade-up delay-300">
+            <a href="#learners" className="btn-primary">Start Learning →</a>
+            <a href="#educators" className="btn-secondary">Teach for Inclusion</a>
+          </div>
+        </div>
+        <div className="hero-visual animate-fade-up delay-400 relative z-10" aria-hidden="true">
       <div className="hero-img-wrap">
         <img
           src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
-          alt="Diverse group of students collaborating and learning together"
+          alt="Diverse team collaborating on inclusive digital education"
           loading="eager"
         />
       </div>
-      <div className="absolute -bottom-6 -left-6 bg-background/90 backdrop-blur-xl border border-border/50 shadow-2xl p-5 rounded-2xl max-w-[220px] z-10 flex flex-col gap-1.5 transform transition-transform hover:-translate-y-1">
-        <div className="flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-wider">
-          <Check className="h-4 w-4" /> Accessibility First
+      <div className="hero-badge group cursor-pointer">
+        <div className="hero-badge-icon relative">
+          <div className="absolute inset-0 bg-teal-400 rounded-full blur-md opacity-40 group-hover:opacity-60 transition-opacity"></div>
+          <svg className="relative" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
         </div>
-        <span className="text-muted-foreground text-sm leading-tight">Every course, every learner</span>
+        <div className="hero-badge-text flex-1">
+          Accessibility First
+          <span>Every course, every learner</span>
+        </div>
+        <div className="ml-2 w-8 h-8 rounded-full bg-foreground/5 dark:bg-foreground/10 flex items-center justify-center opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
       </div>
     </div>
   </section>
 
-  {/* STATS */}
-  <div className="stats-strip" role="region" aria-label="Key statistics">
-    <div className="stat-item">
-      <div className="stat-num">500+</div>
-      <div className="stat-label">Learners on Waitlist</div>
-    </div>
-    <div className="stat-item">
-      <div className="stat-num">7</div>
-      <div className="stat-label">Skill Tracks</div>
-    </div>
-    <div className="stat-item">
-      <div className="stat-num">2</div>
-      <div className="stat-label">Learner Pathways</div>
-    </div>
-    <div className="stat-item">
-      <div className="stat-num">100%</div>
-      <div className="stat-label">Accessible Design</div>
-    </div>
-  </div>
+
 
   {/* PARTNERS */}
   <section className="py-12 bg-background border-b border-border/50 overflow-hidden">
@@ -98,7 +92,7 @@ const Index = () => {
     <h2 className="section-title" id="learners-heading">Learn Digital Skills That Open Doors</h2>
     <p className="section-sub">Accessible, practical, and inclusive — our programmes are built around how you learn, not how others expect you to.</p>
 
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mt-12">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mt-8">
       <div className="rounded-2xl overflow-hidden shadow-2xl relative aspect-square">
         <img
           src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80"
@@ -143,7 +137,7 @@ const Index = () => {
     <h2 className="section-title" id="educators-heading">Build Classrooms That Work for Everyone</h2>
     <p className="section-sub">Develop the knowledge, tools, and confidence to create inclusive learning environments where every student can thrive.</p>
 
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mt-12">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mt-8">
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6" role="list">
           <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4" role="listitem">
@@ -238,7 +232,7 @@ const Index = () => {
     <p className="section-eyebrow">Who We Serve</p>
     <h2 className="section-title" id="serve-heading">Built for Learners and Leaders Alike</h2>
     <p className="section-sub">Whether you're building your career or building more inclusive institutions — there's a place for you here.</p>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
       <div className="bg-card rounded-2xl border border-border/50 shadow-lg overflow-hidden flex flex-col hover:shadow-xl transition-shadow">
         <div className="aspect-[4/3] w-full relative">
           <img
@@ -350,13 +344,13 @@ const Index = () => {
     <p className="section-eyebrow">Impact</p>
     <h2 className="section-title" id="impact-heading">Changing Lives, One Learner at a Time</h2>
     <p className="section-sub">Real outcomes for real people — across Nigeria and beyond.</p>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
       <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">500+</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Learners on Waitlist</div></div>
       <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">7</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Digital Skill Tracks</div></div>
       <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">3+</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Institutional Pilot Partners</div></div>
       <div className="bg-card rounded-2xl p-8 text-center shadow-sm border border-border/50"><div className="font-heading text-5xl font-extrabold text-primary tracking-tight">100%</div><div className="text-sm md:text-base text-muted-foreground mt-2 font-medium">Accessibility Compliant</div></div>
     </div>
-    <div className="mt-12 bg-card rounded-2xl p-8 md:p-12 border-l-4 border-primary shadow-sm border border-border/50">
+    <div className="mt-8 bg-card rounded-2xl p-8 md:p-12 border-l-4 border-primary shadow-sm border border-border/50">
       <p className="font-heading text-xl md:text-2xl font-bold leading-relaxed text-foreground mb-4">"Ternkonnect gave me a pathway into tech that actually worked with my disability — not around it."</p>
       <p className="text-base text-muted-foreground">— Early learner, Data Entry &amp; Virtual Assistance cohort</p>
     </div>
@@ -364,7 +358,7 @@ const Index = () => {
 
   {/* OUR STORY */}
   <section style={{"background":"var(--white)", "color":"var(--ink)"}} id="about" aria-labelledby="about-heading">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
       <div>
         <p className="section-eyebrow">Our Story</p>
         <h2 className="section-title" id="about-heading">Built From the Ground Up — With Inclusion at the Core</h2>
@@ -382,7 +376,7 @@ const Index = () => {
       <img
         src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80"
         alt="Diverse group of professionals working together on digital skills"
-        loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+        loading="lazy" />
     </div>
     <div className="join-content">
       <p className="section-eyebrow">Join the Academy</p>
