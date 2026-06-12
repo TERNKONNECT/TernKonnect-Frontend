@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminInvite from "./pages/AdminInvite";
+import InstructorSignup from "./pages/InstructorSignup";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import MyLearning from "./pages/MyLearning";
@@ -30,7 +31,6 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import NotFound from "./pages/NotFound";
 import AccessibilityWidget from "./components/AccessibilityWidget";
 import About from "./pages/About";
-import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import GetStarted from "./pages/GetStarted";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -62,10 +62,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Courses />} />
-            {/* <Route path="/" element={<Index />} /> */}
+            <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/instructor-signup" element={<InstructorSignup />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/admin-invite" element={<AdminInvite />} />
             <Route path="/contact" element={<Contact />} />
@@ -73,7 +73,6 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
-            <Route path="/services" element={<Services />} />
             <Route path="/get" element={<GetStarted />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route

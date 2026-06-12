@@ -187,14 +187,14 @@ export const api = {
     }
   },
 
-  initializePayment: async (courseId: string) => {
+  initializePayment: async (courseId: string, totalAmount?: number) => {
     const res = await fetch(`${API_URL}/api/payments/initialize`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         ...authHeaders(),
       },
-      body: JSON.stringify({ courseId }),
+      body: JSON.stringify({ courseId, totalAmount }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || "Failed to start payment");
@@ -204,6 +204,16 @@ export const api = {
       amount: number;
       currency: string;
     };
+  },
+
+  getPaymentConfig: async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/payments/config`);
+      if (!res.ok) return { serviceFeePercentage: 0 };
+      return res.json();
+    } catch {
+      return { serviceFeePercentage: 0 };
+    }
   },
 
   verifyPayment: async (reference: string) => {
