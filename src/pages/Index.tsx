@@ -80,8 +80,10 @@ const Index = () => {
   <section className="py-12 bg-background border-b border-border/50 overflow-hidden">
     <div className="container px-6">
       <p className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-8">Our Partners</p>
-      <div className="flex justify-center items-center opacity-70 hover:opacity-100 transition-opacity duration-300">
-        <img src="/wagetech.png" alt="Wagetech Logo" className="h-20 md:h-24 object-contain mix-blend-multiply filter grayscale hover:grayscale-0 transition-all duration-300" />
+      <div className="flex justify-center items-center">
+        <a href="https://www.wagetech.ng" target="_blank" rel="noopener noreferrer" aria-label="Visit Wagetech website">
+          <img src="/wagetech_logo.png" alt="Wagetech Logo" className="h-20 md:h-24 object-contain transition-all duration-300 hover:scale-105" />
+        </a>
       </div>
     </div>
   </section>
