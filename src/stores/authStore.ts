@@ -11,7 +11,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<User>;
   signup: (name: string, email: string, password: string, userType: "learner" | "educator") => Promise<boolean>;
   instructorSignup: (name: string, email: string, password: string) => Promise<string>;
   logout: () => void;
@@ -52,7 +52,7 @@ export const useAuthStore = create<AuthState>()(
         const { useEnrollmentStore } = await import("./enrollmentStore");
         useEnrollmentStore.getState().initForUser(user.id);
 
-        return true;
+        return user;
       },
 
       signup: async (name: string, email: string, password: string, userType: "learner" | "educator") => {
