@@ -125,10 +125,14 @@ const Login = () => {
           }
           speak("Logging you in now.");
           try {
-            await login(normalized_email_ref.current, password);
+            const user = await login(normalized_email_ref.current, password);
             speak("Welcome back! You are now logged in.");
             localStorage.setItem("voice_flow_step", "ask-course");
-            navigate("/");
+            if (user.role === "admin" || user.role === "super-admin") {
+              navigate("/dashboard");
+            } else {
+              navigate("/");
+            }
           } catch {
             speak("Login failed. Please check your credentials and try again.");
           }
@@ -164,10 +168,14 @@ const Login = () => {
             );
             setTimeout(async () => {
               try {
-                await login(normalized_email_ref.current, pwd);
+                const user = await login(normalized_email_ref.current, pwd);
                 speak("Welcome back! You are now logged in.");
                 localStorage.setItem("voice_flow_step", "ask-course");
-                navigate("/");
+                if (user.role === "admin" || user.role === "super-admin") {
+                  navigate("/dashboard");
+                } else {
+                  navigate("/");
+                }
               } catch {
                 speak(
                   "Login failed. You can say change email or change password to correct them, then say login to try again.",
