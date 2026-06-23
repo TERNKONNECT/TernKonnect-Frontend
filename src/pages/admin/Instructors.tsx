@@ -103,6 +103,19 @@ const Instructors = () => {
     }
   };
 
+  const handleResendInvite = async (instructor: InstructorSummary) => {
+    try {
+      const result = await superAdminApi.inviteInstructor(
+        instructor.name,
+        instructor.email,
+        "admin"
+      );
+      toast.success(result.message);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to resend invite");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -279,6 +292,16 @@ const Instructors = () => {
                       {new Date(instructor.joinedAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
+                      {instructor.inviteStatus === "pending" && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => handleResendInvite(instructor)}
+                          className="mr-2 text-primary"
+                        >
+                          Resend Invite
+                        </Button>
+                      )}
                       <Button variant="ghost" size="sm" asChild>
                         <Link to={`/dashboard/instructors/${instructor.id}`}>
                           View Details <ChevronRight className="h-4 w-4 ml-1" />
