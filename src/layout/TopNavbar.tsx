@@ -34,7 +34,7 @@ export function TopNavbar() {
           <span className="text-sm font-medium text-foreground hidden sm:inline">{user?.name}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem className="gap-2">
+          <DropdownMenuItem className="gap-2" onClick={() => navigate('/profile')}>
             <User className="h-4 w-4" /> Profile
           </DropdownMenuItem>
           <DropdownMenuSeparator />

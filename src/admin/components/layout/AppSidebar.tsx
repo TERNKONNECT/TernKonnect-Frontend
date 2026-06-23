@@ -43,7 +43,7 @@ const superAdminNavItems = [
 ];
 
 const secondaryItems = [
-  { title: "Settings", url: "/dashboard/settings", icon: Settings },
+  { title: "Settings", url: "/dashboard/profile", icon: Settings },
 ];
 
 export function AppSidebar() {
