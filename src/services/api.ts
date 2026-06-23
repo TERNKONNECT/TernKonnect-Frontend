@@ -82,7 +82,7 @@ const mapBackendCourse = (c: any): Course => ({
     "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=400&fit=crop",
   instructor: {
     id: c.instructor?.id ?? c.createdBy ?? "instructor",
-    name: c.instructor?.name ?? "DWSAcademy  Instructor",
+    name: c.instructor?.name ?? "TernKonnect Instructor",
     title: c.instructor?.title ?? "",
     bio: c.instructor?.bio ?? "",
     avatar:
