@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, BookOpen, User, LogOut } from "lucide-react";
+import { Menu, X, BookOpen, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/authStore";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -53,7 +53,15 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             </Link> */}
             {isAuthenticated ? (
               <>
-                <Link to="/profile">
+                {(user?.role === "admin" || user?.role === "super-admin") && (
+                  <Link to="/dashboard">
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </Button>
+                  </Link>
+                )}
+                <Link to={(user?.role === "admin" || user?.role === "super-admin") ? "/dashboard/profile" : "/profile"}>
                   <Button variant="ghost" size="sm" className="gap-2">
                     <User className="h-4 w-4" />
                     {user?.name}
@@ -128,7 +136,14 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
               */}
               {isAuthenticated ? (
                 <>
-                  <Link to="/profile" onClick={() => setMobileOpen(false)}>
+                  {(user?.role === "admin" || user?.role === "super-admin") && (
+                    <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
+                      <Button variant="ghost" size="sm" className="w-full justify-start gap-2">
+                        <LayoutDashboard className="h-4 w-4" /> Dashboard
+                      </Button>
+                    </Link>
+                  )}
+                  <Link to={(user?.role === "admin" || user?.role === "super-admin") ? "/dashboard/profile" : "/profile"} onClick={() => setMobileOpen(false)}>
                     <Button
                       variant="ghost"
                       size="sm"
