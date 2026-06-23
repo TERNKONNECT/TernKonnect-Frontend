@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function TopNavbar() {
   const { user, logout } = useAuth();
@@ -26,23 +27,26 @@ export function TopNavbar() {
     <header className="flex h-14 items-center justify-between border-b border-border bg-background px-4">
       <SidebarTrigger />
 
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent outline-none">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-primary text-primary-foreground text-xs">{initials}</AvatarFallback>
-          </Avatar>
-          <span className="text-sm font-medium text-foreground hidden sm:inline">{user?.name}</span>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem className="gap-2" onClick={() => navigate('/dashboard/profile')}>
-            <User className="h-4 w-4" /> Profile
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="gap-2 text-destructive" onClick={handleLogout}>
-            <LogOut className="h-4 w-4" /> Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent outline-none">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="bg-primary text-primary-foreground text-xs">{initials}</AvatarFallback>
+            </Avatar>
+            <span className="text-sm font-medium text-foreground hidden sm:inline">{user?.name}</span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem className="gap-2" onClick={() => navigate('/dashboard/profile')}>
+              <User className="h-4 w-4" /> Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="gap-2 text-destructive" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" /> Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   );
 }
