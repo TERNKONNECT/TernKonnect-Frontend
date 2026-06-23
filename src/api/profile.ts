@@ -38,4 +38,7 @@ export const profileApi = {
     });
     return res.data;
   },
+
+  updatePassword: (data: { currentPassword: string; newPassword: string }): Promise<{ message: string }> =>
+    api.put("/api/auth/password", data).then((r) => r.data),
 };
