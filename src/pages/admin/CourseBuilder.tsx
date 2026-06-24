@@ -10,6 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import {
   ArrowLeft,
@@ -586,6 +592,7 @@ const ModuleCard = ({
   const [expanded, setExpanded] = useState(true);
   const [addingLesson, setAddingLesson] = useState(false);
   const [deleteLesson, setDeleteLesson] = useState<string | null>(null);
+  const [previewLesson, setPreviewLesson] = useState<Lesson | null>(null);
   const [quiz, setQuiz] = useState<Quiz | null>(mod.quiz ?? null);
   const [lessons, setLessons] = useState<Lesson[]>(mod.lessons ?? []);
 
@@ -653,7 +660,17 @@ const ModuleCard = ({
             >
               <div className="flex items-center gap-2">
                 {lesson.type === "video" ? (
-                  <Play className="h-3.5 w-3.5 text-primary" />
+                  lesson.videoUrl ? (
+                    <button
+                      onClick={() => setPreviewLesson(lesson)}
+                      className="text-primary hover:text-primary/70"
+                      title="Play video"
+                    >
+                      <Play className="h-3.5 w-3.5" />
+                    </button>
+                  ) : (
+                    <Play className="h-3.5 w-3.5 text-primary" />
+                  )
                 ) : (
                   <FileText className="h-3.5 w-3.5 text-muted-foreground" />
                 )}
@@ -723,6 +740,18 @@ const ModuleCard = ({
         description="This will permanently delete this lesson."
         onConfirm={handleDeleteLesson}
       />
+
+      <Dialog
+        open={!!previewLesson}
+        onOpenChange={(open) => !open && setPreviewLesson(null)}
+      >
+        <DialogContent className="sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{previewLesson?.title}</DialogTitle>
+          </DialogHeader>
+          {previewLesson && <VideoPreview url={previewLesson.videoUrl} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
