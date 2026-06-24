@@ -43,7 +43,7 @@ const Index = () => {
             An inclusive learning platform equipping persons with disabilities with digital skills and career opportunities — while helping educators build classrooms where every learner succeeds.
           </p>
           <div className="hero-actions animate-fade-up delay-300">
-            <a href="#learners" className="btn-primary">Start Learning →</a>
+            <Link to="/login" className="btn-primary">Start Learning →</Link>
             {/* <a href="#educators" className="btn-secondary">Teach for Inclusion</a> */}
           </div>
         </div>
@@ -79,10 +79,22 @@ const Index = () => {
   {/* PARTNERS */}
   <section className="py-12 bg-background border-b border-border/50 overflow-hidden">
     <div className="container px-6">
-      <p className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-8">Our Partners</p>
-      <div className="flex justify-center items-center">
+      <p className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-10">Our Partners</p>
+      <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
         <a href="https://www.wagetech.ng" target="_blank" rel="noopener noreferrer" aria-label="Visit Wagetech website">
-          <img src="/wagetech_logo.png" alt="Wagetech Logo" className="h-20 md:h-24 object-contain transition-all duration-300 hover:scale-105" />
+          <img src="/wagetech_logo.png" alt="Wagetech Logo" className="h-16 md:h-20 object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 hover:scale-105 transition-all duration-300" />
+        </a>
+        <a href="#" aria-label="Visit Erilearn website">
+          <img src="/erilearn.png" alt="Erilearn Logo" className="h-16 md:h-20 object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 hover:scale-105 transition-all duration-300" />
+        </a>
+        <a href="#" aria-label="Visit Labspace website">
+          <img src="/labspace.png" alt="Labspace Logo" className="h-16 md:h-20 object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 hover:scale-105 transition-all duration-300" />
+        </a>
+        <a href="#" aria-label="Visit Job Mingle website">
+          <img src="/job mingle.png" alt="Job Mingle Logo" className="h-16 md:h-20 object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 hover:scale-105 transition-all duration-300" />
+        </a>
+        <a href="#" aria-label="Visit NSB Hub website">
+          <img src="/nsb hub.png" alt="NSB Hub Logo" className="h-16 md:h-20 object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 hover:scale-105 transition-all duration-300" />
         </a>
       </div>
     </div>
