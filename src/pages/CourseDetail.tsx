@@ -438,7 +438,9 @@ const CourseDetail = () => {
                           key={lesson.id}
                           className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 text-sm"
                         >
-                          {lesson.type === "video" ? (
+                          {lesson.locked ? (
+                            <Lock className="h-4 w-4 text-muted-foreground" />
+                          ) : lesson.type === "video" ? (
                             <Play className="h-4 w-4 text-muted-foreground" />
                           ) : lesson.type === "reading" ? (
                             <FileText className="h-4 w-4 text-muted-foreground" />
