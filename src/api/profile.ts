@@ -41,4 +41,7 @@ export const profileApi = {
 
   updatePassword: (data: { currentPassword: string; newPassword: string }): Promise<{ message: string }> =>
     api.put("/api/auth/password", data).then((r) => r.data),
+
+  deactivate: (data: { password: string }): Promise<{ message: string }> =>
+    api.post("/api/auth/deactivate", data).then((r) => r.data),
 };

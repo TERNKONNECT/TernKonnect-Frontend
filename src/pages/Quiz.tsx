@@ -12,12 +12,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/services/api";
 import { useEnrollmentStore } from "@/stores/enrollmentStore";
 import { useToast } from "@/hooks/use-toast";
 import { useTTS } from "@/hooks/useTTS";
 import { useVoiceCommands } from "@/hooks/useVoiceCommands";
 import type { Quiz as QuizType } from "@/types";
+
+const isAnswered = (
+  q: { id: string; type?: "mcq" | "theory" },
+  answers: Record<string, number | string>,
+) => {
+  const a = answers[q.id];
+  if (q.type === "theory") return typeof a === "string" && a.trim().length > 0;
+  return a !== undefined;
+};
 
 const Quiz = () => {
   const { courseId, quizId } = useParams<{
@@ -27,7 +37,7 @@ const Quiz = () => {
   const [quiz, setQuiz] = useState<QuizType | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<
-    Record<string, number>
+    Record<string, number | string>
   >({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -40,7 +50,7 @@ const Quiz = () => {
   // Refs so voice callbacks always have latest state
   const quizRef = useRef<QuizType | null>(null);
   const currentQuestionRef = useRef(0);
-  const selectedAnswersRef = useRef<Record<string, number>>({});
+  const selectedAnswersRef = useRef<Record<string, number | string>>({});
   const submittedRef = useRef(false);
 
   useEffect(() => {
@@ -69,10 +79,16 @@ const Quiz = () => {
     if (!quiz) return;
     const q = quiz.questions[currentQuestion];
     if (!q) return;
-    const optionsText = q.options
-      .map((opt, i) => `Option ${i + 1}: ${opt}`)
-      .join(". ");
     setTimeout(() => {
+      if (q.type === "theory") {
+        speak(
+          `Question ${currentQuestion + 1} of ${quiz.questions.length}. ${q.question}. This is a written answer question — please type your response.`,
+        );
+        return;
+      }
+      const optionsText = q.options
+        .map((opt, i) => `Option ${i + 1}: ${opt}`)
+        .join(". ");
       speak(
         `Question ${currentQuestion + 1} of ${quiz.questions.length}. ${q.question}. ${optionsText}. Say select option 1 through ${q.options.length} to answer.`,
       );
@@ -90,6 +106,16 @@ const Quiz = () => {
     speak(`Selected option ${optionIndex + 1}: ${q.options[optionIndex]}`);
   };
 
+  const handleTheoryAnswer = (value: string) => {
+    if (submitted) return;
+    const q = quiz!.questions[currentQuestion];
+    setSelectedAnswers((prev) => ({ ...prev, [q.id]: value }));
+    selectedAnswersRef.current = {
+      ...selectedAnswersRef.current,
+      [q.id]: value,
+    };
+  };
+
   const handleNext = () => {
     if (!quiz) return;
     if (currentQuestion < quiz.questions.length - 1) {
@@ -99,7 +125,8 @@ const Quiz = () => {
 
   const handleSubmit = () => {
     if (!quiz) return;
-    const score = quiz.questions.reduce(
+    const gradable = quiz.questions.filter((q) => q.type !== "theory");
+    const score = gradable.reduce(
       (acc, q) =>
         acc + (selectedAnswersRef.current[q.id] === q.correctAnswer ? 1 : 0),
       0,
@@ -109,18 +136,24 @@ const Quiz = () => {
         quizId,
         answers: selectedAnswersRef.current,
         score,
-        totalQuestions: quiz.questions.length,
+        totalQuestions: gradable.length,
         completedAt: new Date().toISOString(),
       });
-      if (score === quiz.questions.length) completeCourse(courseId);
+      if (gradable.length === 0 || score === gradable.length)
+        completeCourse(courseId);
     }
     setSubmitted(true);
     speak(
-      `Quiz submitted. Your score is ${score} out of ${quiz.questions.length}.`,
+      gradable.length > 0
+        ? `Quiz submitted. Your score is ${score} out of ${gradable.length}.`
+        : "Quiz submitted. Your answers have been saved for review.",
     );
     toast({
       title: "Quiz Submitted!",
-      description: `You scored ${score}/${quiz.questions.length}`,
+      description:
+        gradable.length > 0
+          ? `You scored ${score}/${gradable.length}`
+          : "Your answers have been saved for review.",
     });
   };
 
@@ -229,8 +262,8 @@ const Quiz = () => {
     const q = quizRef.current;
     if (!q || submittedRef.current) return;
     const idx = currentQuestionRef.current;
-    if (selectedAnswersRef.current[q.questions[idx].id] === undefined) {
-      speak("Please select an answer first.");
+    if (!isAnswered(q.questions[idx], selectedAnswersRef.current)) {
+      speak("Please answer the question first.");
       return;
     }
     if (idx < q.questions.length - 1) {
@@ -245,7 +278,7 @@ const Quiz = () => {
     const q = quizRef.current;
     if (!q || submittedRef.current) return;
     const unanswered = q.questions.filter(
-      (question) => selectedAnswersRef.current[question.id] === undefined,
+      (question) => !isAnswered(question, selectedAnswersRef.current),
     ).length;
     if (unanswered > 0) {
       speak(
@@ -260,6 +293,10 @@ const Quiz = () => {
     const q = quizRef.current;
     if (!q) return;
     const question = q.questions[currentQuestionRef.current];
+    if (question.type === "theory") {
+      speak(`${question.question}. This is a written answer question.`);
+      return;
+    }
     const optionsText = question.options
       .map((opt, i) => `Option ${i + 1}: ${opt}`)
       .join(". ");
@@ -323,11 +360,15 @@ const Quiz = () => {
   const progressPct = submitted
     ? 100
     : Math.round((currentQuestion / totalQuestions) * 100);
-  const score = quiz.questions.reduce(
+  const gradableQuestions = quiz.questions.filter((q) => q.type !== "theory");
+  const score = gradableQuestions.reduce(
     (acc, q) => acc + (selectedAnswers[q.id] === q.correctAnswer ? 1 : 0),
     0,
   );
-  const scorePct = Math.round((score / totalQuestions) * 100);
+  const hasGradableQuestions = gradableQuestions.length > 0;
+  const scorePct = hasGradableQuestions
+    ? Math.round((score / gradableQuestions.length) * 100)
+    : 100;
 
   if (submitted) {
     return (
@@ -343,27 +384,70 @@ const Quiz = () => {
         <div className="container max-w-2xl py-12 space-y-8">
           <div className="text-center space-y-4">
             <div
-              className={`h-20 w-20 rounded-full flex items-center justify-center mx-auto ${scorePct >= 80 ? "gradient-primary" : "bg-muted"}`}
+              className={`h-20 w-20 rounded-full flex items-center justify-center mx-auto ${!hasGradableQuestions || scorePct >= 80 ? "gradient-primary" : "bg-muted"}`}
             >
               <Trophy
-                className={`h-10 w-10 ${scorePct >= 80 ? "text-white" : "text-muted-foreground"}`}
+                className={`h-10 w-10 ${!hasGradableQuestions || scorePct >= 80 ? "text-white" : "text-muted-foreground"}`}
               />
             </div>
             <h1 className="text-3xl font-bold">
-              {scorePct >= 80 ? "Great Job! 🎉" : "Keep Trying!"}
+              {!hasGradableQuestions
+                ? "Quiz Completed!"
+                : scorePct >= 80
+                  ? "Great Job! 🎉"
+                  : "Keep Trying!"}
             </h1>
-            <p className="text-xl">
-              Score:{" "}
-              <strong>
-                {score}/{totalQuestions}
-              </strong>{" "}
-              ({scorePct}%)
-            </p>
+            {hasGradableQuestions ? (
+              <p className="text-xl">
+                Score:{" "}
+                <strong>
+                  {score}/{gradableQuestions.length}
+                </strong>{" "}
+                ({scorePct}%)
+              </p>
+            ) : (
+              <p className="text-muted-foreground">
+                Review your answers below.
+              </p>
+            )}
           </div>
 
           <div className="space-y-4">
             {quiz.questions.map((q, i) => {
               const userAnswer = selectedAnswers[q.id];
+
+              if (q.type === "theory") {
+                return (
+                  <Card key={q.id}>
+                    <CardContent className="p-4 space-y-3">
+                      <p className="font-medium text-sm">
+                        Q{i + 1}: {q.question}
+                      </p>
+                      <div className="text-sm p-3 rounded bg-muted">
+                        <p className="text-xs text-muted-foreground mb-1">
+                          Your answer:
+                        </p>
+                        <p className="whitespace-pre-wrap">
+                          {typeof userAnswer === "string" && userAnswer.trim()
+                            ? userAnswer
+                            : "No answer provided"}
+                        </p>
+                      </div>
+                      {q.sampleAnswer && (
+                        <div className="text-sm p-3 rounded bg-primary/5 border border-primary/20">
+                          <p className="text-xs font-medium text-primary mb-1">
+                            Sample answer:
+                          </p>
+                          <p className="whitespace-pre-wrap">
+                            {q.sampleAnswer}
+                          </p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              }
+
               const isCorrect = userAnswer === q.correctAnswer;
               return (
                 <Card
@@ -481,24 +565,37 @@ const Quiz = () => {
               <h2 className="text-xl font-bold">{question.question}</h2>
             </div>
 
-            <div className="space-y-3">
-              {question.options.map((option, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSelectAnswer(i)}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition-all text-sm ${
-                    selectedAnswers[question.id] === i
-                      ? "border-primary bg-primary/5 font-medium"
-                      : "border-border hover:border-primary/50"
-                  }`}
-                >
-                  <span className="inline-flex items-center justify-center h-6 w-6 rounded-full border mr-3 text-xs font-medium">
-                    {String.fromCharCode(65 + i)}
-                  </span>
-                  {option}
-                </button>
-              ))}
-            </div>
+            {question.type === "theory" ? (
+              <Textarea
+                value={
+                  typeof selectedAnswers[question.id] === "string"
+                    ? (selectedAnswers[question.id] as string)
+                    : ""
+                }
+                onChange={(e) => handleTheoryAnswer(e.target.value)}
+                placeholder="Type your answer..."
+                rows={6}
+              />
+            ) : (
+              <div className="space-y-3">
+                {question.options.map((option, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSelectAnswer(i)}
+                    className={`w-full text-left p-4 rounded-lg border-2 transition-all text-sm ${
+                      selectedAnswers[question.id] === i
+                        ? "border-primary bg-primary/5 font-medium"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <span className="inline-flex items-center justify-center h-6 w-6 rounded-full border mr-3 text-xs font-medium">
+                      {String.fromCharCode(65 + i)}
+                    </span>
+                    {option}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Voice commands hint */}
             {voiceEnabled && (
@@ -516,10 +613,15 @@ const Quiz = () => {
                   )}
                 </p>
                 <p>
-                  <span className="text-foreground">
-                    Select option 1–{question.options.length}
-                  </span>{" "}
-                  · <span className="text-foreground">Next question</span> ·{" "}
+                  {question.type !== "theory" && (
+                    <>
+                      <span className="text-foreground">
+                        Select option 1–{question.options.length}
+                      </span>{" "}
+                      ·{" "}
+                    </>
+                  )}
+                  <span className="text-foreground">Next question</span> ·{" "}
                   <span className="text-foreground">Repeat</span> ·{" "}
                   <span className="text-foreground">Submit</span>
                 </p>
@@ -537,7 +639,7 @@ const Quiz = () => {
               {currentQuestion < totalQuestions - 1 ? (
                 <Button
                   onClick={handleNext}
-                  disabled={selectedAnswers[question.id] === undefined}
+                  disabled={!isAnswered(question, selectedAnswers)}
                   className="gradient-primary border-0 text-white"
                 >
                   Next
@@ -545,9 +647,9 @@ const Quiz = () => {
               ) : (
                 <Button
                   onClick={handleSubmit}
-                  disabled={
-                    Object.keys(selectedAnswers).length < totalQuestions
-                  }
+                  disabled={quiz.questions.some(
+                    (q) => !isAnswered(q, selectedAnswers),
+                  )}
                   className="gradient-primary border-0 text-white"
                 >
                   Submit Quiz
