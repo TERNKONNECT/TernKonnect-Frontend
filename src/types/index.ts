@@ -78,11 +78,13 @@ export interface QuizQuestion {
   options: string[];
   correctAnswer: number;
   explanation: string;
+  type?: "mcq" | "theory";
+  sampleAnswer?: string;
 }
 
 export interface QuizAttempt {
   quizId: string;
-  answers: Record<string, number>;
+  answers: Record<string, number | string>;
   score: number;
   totalQuestions: number;
   completedAt: string;

@@ -118,7 +118,7 @@ const QuizEditor = ({
   const [title, setTitle] = useState(quiz?.title ?? "Module Quiz");
   const [questions, setQuestions] = useState<Question[]>(
     quiz?.questions ?? [
-      { text: "", options: ["", "", "", ""], correctIndex: 0 },
+      { text: "", options: ["", "", "", ""], correctIndex: 0, type: "mcq" },
     ],
   );
   const [saving, setSaving] = useState(false);
@@ -196,33 +196,69 @@ const QuizEditor = ({
                     </button>
                   )}
                 </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => updateQ(qi, { type: "mcq" })}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${q.type !== "theory" ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}
+                  >
+                    Multiple Choice
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateQ(qi, { type: "theory" })}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${q.type === "theory" ? "bg-primary text-primary-foreground border-primary" : "border-border"}`}
+                  >
+                    Theory
+                  </button>
+                </div>
                 <Input
                   placeholder="Question text"
                   value={q.text}
                   onChange={(e) => updateQ(qi, { text: e.target.value })}
                 />
-                <div className="grid grid-cols-2 gap-2">
-                  {q.options.map((opt, oi) => (
-                    <div key={oi} className="flex items-center gap-1">
-                      <input
-                        type="radio"
-                        name={`correct-${qi}`}
-                        checked={q.correctIndex === oi}
-                        onChange={() => updateQ(qi, { correctIndex: oi })}
-                        className="accent-primary"
-                      />
-                      <Input
-                        placeholder={`Option ${oi + 1}`}
-                        value={opt}
-                        onChange={(e) => updateOption(qi, oi, e.target.value)}
-                        className="h-8 text-xs"
-                      />
+                {q.type === "theory" ? (
+                  <>
+                    <Textarea
+                      placeholder="Optional sample answer (shown to students after they submit, for self-review)"
+                      value={q.sampleAnswer ?? ""}
+                      onChange={(e) =>
+                        updateQ(qi, { sampleAnswer: e.target.value })
+                      }
+                      rows={3}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Theory questions aren't auto-graded — students type a
+                      free-text answer and review it against the sample
+                      answer themselves.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-2">
+                      {q.options.map((opt, oi) => (
+                        <div key={oi} className="flex items-center gap-1">
+                          <input
+                            type="radio"
+                            name={`correct-${qi}`}
+                            checked={q.correctIndex === oi}
+                            onChange={() => updateQ(qi, { correctIndex: oi })}
+                            className="accent-primary"
+                          />
+                          <Input
+                            placeholder={`Option ${oi + 1}`}
+                            value={opt}
+                            onChange={(e) => updateOption(qi, oi, e.target.value)}
+                            className="h-8 text-xs"
+                          />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Select the radio button next to the correct answer
-                </p>
+                    <p className="text-xs text-muted-foreground">
+                      Select the radio button next to the correct answer
+                    </p>
+                  </>
+                )}
               </div>
             ))}
             <Button
@@ -232,7 +268,7 @@ const QuizEditor = ({
               onClick={() =>
                 setQuestions([
                   ...questions,
-                  { text: "", options: ["", "", "", ""], correctIndex: 0 },
+                  { text: "", options: ["", "", "", ""], correctIndex: 0, type: "mcq" },
                 ])
               }
             >

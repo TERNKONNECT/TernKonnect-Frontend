@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Calendar, BookOpen, Award, Trophy, Upload, Save, Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,10 +33,11 @@ const achievements = [
 ];
 
 const Profile = () => {
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, logout } = useAuthStore();
   const { enrolledCourses } = useEnrollmentStore();
   const [courses, setCourses] = useState<Course[]>([]);
-  
+  const navigate = useNavigate();
+
   // Settings State
   const [profileData, setProfileData] = useState<AdminProfile | null>(null);
   const [name, setName] = useState("");
@@ -52,6 +53,9 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
+
+  const [deactivatePassword, setDeactivatePassword] = useState("");
+  const [deactivating, setDeactivating] = useState(false);
 
   useEffect(() => {
     api.getCourses().then((all) => {
@@ -132,6 +136,21 @@ const Profile = () => {
       toast.error(err.response?.data?.error || "Failed to update password");
     } finally {
       setSavingPassword(false);
+    }
+  };
+
+  const handleDeactivate = async () => {
+    setDeactivating(true);
+    try {
+      await profileApi.deactivate({ password: deactivatePassword });
+      toast.success("Account deactivated");
+      logout();
+      navigate("/login");
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || "Failed to deactivate account");
+    } finally {
+      setDeactivating(false);
+      setDeactivatePassword("");
     }
   };
 
@@ -395,6 +414,35 @@ const Profile = () => {
                     <Save className="h-4 w-4" />
                     {savingPassword ? "Updating..." : "Update Password"}
                  </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-destructive/30">
+              <CardHeader>
+                <CardTitle className="text-base text-destructive">Danger Zone</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Deactivating your account will sign you out and prevent future
+                  logins. Your data is preserved — contact support to reactivate.
+                </p>
+                <div className="space-y-2 max-w-sm">
+                  <Label>Confirm Password</Label>
+                  <Input
+                    type="password"
+                    value={deactivatePassword}
+                    onChange={(e) => setDeactivatePassword(e.target.value)}
+                    placeholder="Enter your password"
+                  />
+                </div>
+                <Button
+                  variant="destructive"
+                  onClick={handleDeactivate}
+                  disabled={deactivating || !deactivatePassword}
+                  className="gap-2"
+                >
+                  {deactivating ? "Deactivating..." : "Deactivate Account"}
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>

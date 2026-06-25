@@ -84,3 +84,12 @@ export interface InstructorDetail {
   totalCourses: number;
   courses: CourseWithStats[];
 }
+
+export interface Question {
+  _id?: string;
+  text: string;
+  options: string[];
+  correctIndex: number;
+  type?: "mcq" | "theory";
+  sampleAnswer?: string;
+}
