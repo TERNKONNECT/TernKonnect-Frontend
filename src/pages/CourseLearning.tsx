@@ -159,9 +159,13 @@ const CourseLearning = () => {
     if (moduleIndex === 0) return true;
     const prevModule = course?.modules[moduleIndex - 1];
     if (!prevModule) return true;
-    return prevModule.lessons.every((l) =>
+    const lessonsCompleted = prevModule.lessons.every((l) =>
       enrollment?.completedLessons.includes(l.id),
     );
+    const quizCompleted = prevModule.quizId
+      ? enrollment?.quizAttempts?.some((a) => a.quizId === prevModule.quizId) ?? false
+      : true;
+    return lessonsCompleted && quizCompleted;
   };
 
   const currentIndexRef = useRef(currentIndex);

@@ -93,3 +93,14 @@ export interface Question {
   type?: "mcq" | "theory";
   sampleAnswer?: string;
 }
+
+export interface AdminQuiz {
+  _id?: string;
+  id?: string;
+  moduleId: string;
+  title: string;
+  description?: string;
+  questions: Question[];
+  createdAt?: string;
+  updatedAt?: string;
+}

@@ -131,16 +131,39 @@ const Quiz = () => {
         acc + (selectedAnswersRef.current[q.id] === q.correctAnswer ? 1 : 0),
       0,
     );
+    const attempt = {
+      quizId: quizId!,
+      answers: selectedAnswersRef.current,
+      score,
+      totalQuestions: gradable.length,
+      completedAt: new Date().toISOString(),
+    };
+
     if (courseId && quizId) {
-      addQuizAttempt(courseId, {
-        quizId,
-        answers: selectedAnswersRef.current,
-        score,
-        totalQuestions: gradable.length,
-        completedAt: new Date().toISOString(),
-      });
+      // Save to local Zustand store (immediate UI feedback)
+      addQuizAttempt(courseId, attempt);
       if (gradable.length === 0 || score === gradable.length)
         completeCourse(courseId);
+
+      // Also persist to backend (fire-and-forget — don't block UI)
+      const tryPersist = async () => {
+        try {
+          const auth = JSON.parse(localStorage.getItem("lms-auth") || "{}");
+          const token = auth?.state?.token ?? localStorage.getItem("lms_token");
+          const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:9000";
+          await fetch(`${API_URL}/api/enrollments/${courseId}/quiz-attempt`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify(attempt),
+          });
+        } catch {
+          // Silent fail — local store already saved the attempt
+        }
+      };
+      tryPersist();
     }
     setSubmitted(true);
     speak(

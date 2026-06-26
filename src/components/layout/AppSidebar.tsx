@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   UserCircle,
   GraduationCap,
+  BookOpenCheck,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -29,6 +30,7 @@ const adminNavItems = [
   { title: "Profile", url: "/dashboard/profile", icon: UserCircle },
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Courses", url: "/dashboard/courses", icon: BookOpen },
+  { title: "Quizzes", url: "/dashboard/quizzes", icon: BookOpenCheck },
   { title: "Users", url: "/dashboard/users", icon: Users },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
 ];
@@ -38,6 +40,7 @@ const superAdminNavItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Instructors", url: "/dashboard/instructors", icon: ShieldCheck },
   { title: "Courses", url: "/dashboard/courses", icon: BookOpen },
+  { title: "Quizzes", url: "/dashboard/quizzes", icon: BookOpenCheck },
   { title: "Users", url: "/dashboard/users", icon: Users },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
 ];
