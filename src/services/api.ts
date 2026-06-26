@@ -285,30 +285,22 @@ export const api = {
     return all.filter((c) => c.isFeatured);
   },
 
-  // Fetch quiz by id — search through course modules
+  // Fetch quiz by id — direct GET /api/quizzes/:id endpoint
   getQuiz: async (quizId: string): Promise<Quiz | undefined> => {
     // Check mock data first
     const mock = quizzes.find((q) => q.id === quizId);
     if (mock) return mock;
 
     try {
-      // Fetch all courses then find the module whose quiz.id matches
-      const res = await fetch(`${API_URL}/api/courses`);
+      const res = await fetch(`${API_URL}/api/quizzes/${quizId}`, {
+        headers: authHeaders(),
+      });
       if (!res.ok) return undefined;
-      const allCourses = await res.json();
+      const q = await res.json();
 
-      for (const course of allCourses) {
-        const courseRes = await fetch(`${API_URL}/api/courses/${course.id}`);
-        if (!courseRes.ok) continue;
-        const courseData = await courseRes.json();
-
-        for (const mod of courseData.modules ?? []) {
-          if (mod.quiz?.id === quizId) {
-            return mapQuiz(mod.quiz, courseData.id);
-          }
-        }
-      }
-      return undefined;
+      // mapQuiz needs a courseId; the backend quiz has a moduleId we can use
+      // We'll use the quiz's own courseId if available, otherwise use a placeholder
+      return mapQuiz(q, q.courseId ?? "");
     } catch {
       return undefined;
     }

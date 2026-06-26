@@ -42,6 +42,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 // Admin pages
 import Dashboard from "./pages/admin/Dashboard";
 import AdminCourses from "./pages/admin/Courses";
+import Quizzes from "./pages/admin/Quizzes";
 import CourseNew from "./pages/admin/CourseNew";
 import AdminCourseDetail from "./pages/admin/CourseDetail";
 import CourseBuilder from "./pages/admin/CourseBuilder";
@@ -141,6 +142,7 @@ const App = () => (
               <Route path="profile" element={<AdminProfile />} />
               <Route path="settings" element={<Settings />} />
               <Route path="courses" element={<AdminCourses />} />
+              <Route path="quizzes" element={<Quizzes />} />
               <Route path="courses/new" element={<CourseNew />} />
               <Route path="courses/:id" element={<AdminCourseDetail />} />
               <Route path="courses/:id/builder" element={<CourseBuilder />} />

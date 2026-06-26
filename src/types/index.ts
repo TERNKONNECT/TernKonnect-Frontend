@@ -29,7 +29,6 @@ export interface Course {
   price?: number;
   currency?: string;
   targetAudience?: "learner" | "educator" | "both";
-  targetAudience?: "learner" | "educator" | "both";
   hasAccess?: boolean;
 }
 
