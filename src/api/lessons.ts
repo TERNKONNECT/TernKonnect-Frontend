@@ -118,4 +118,54 @@ export const lessonsApi = {
     api
       .delete(`/api/courses/${courseId}/modules/${moduleId}/lessons/${lessonId}`)
       .then((r) => r.data),
+
+  uploadDocument: async (
+    courseId: string,
+    moduleId: string,
+    lessonId: string,
+    file: File,
+    onProgress?: (pct: number) => void,
+  ): Promise<AdminLesson> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api
+      .post<AdminLesson>(
+        `/api/courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/document`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (event) => {
+            if (event.total && onProgress) {
+              onProgress(Math.round((event.loaded / event.total) * 100));
+            }
+          },
+        },
+      )
+      .then((r) => r.data);
+  },
+
+  uploadTranscript: async (
+    courseId: string,
+    moduleId: string,
+    lessonId: string,
+    file: File,
+    onProgress?: (pct: number) => void,
+  ): Promise<AdminLesson> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api
+      .post<AdminLesson>(
+        `/api/courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/transcript`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (event) => {
+            if (event.total && onProgress) {
+              onProgress(Math.round((event.loaded / event.total) * 100));
+            }
+          },
+        },
+      )
+      .then((r) => r.data);
+  },
 };

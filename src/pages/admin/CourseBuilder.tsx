@@ -456,6 +456,8 @@ const AddLessonForm = ({
   const [file, setFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [duration, setDuration] = useState("");
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [transcriptFile, setTranscriptFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [introMode, setIntroMode] = useState<"upload" | "youtube">("upload");
@@ -494,6 +496,29 @@ const AddLessonForm = ({
           (pct) => setUploadProgress(pct),
         );
       }
+
+      if (documentFile) {
+        setUploadProgress(0);
+        lesson = await lessonsApi.uploadDocument(
+          courseId,
+          moduleId,
+          lesson.id,
+          documentFile,
+          (pct) => setUploadProgress(pct),
+        );
+      }
+
+      if (transcriptFile) {
+        setUploadProgress(0);
+        lesson = await lessonsApi.uploadTranscript(
+          courseId,
+          moduleId,
+          lesson.id,
+          transcriptFile,
+          (pct) => setUploadProgress(pct),
+        );
+      }
+
       onAdded(lesson);
       toast.success("Lesson added");
     } catch (err: any) {
@@ -575,23 +600,61 @@ const AddLessonForm = ({
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
           />
-          {saving && uploadProgress > 0 && (
-            <div className="space-y-1">
-              <div className="w-full bg-muted rounded-full h-2">
-                <div
-                  className="bg-primary h-2 rounded-full transition-all"
-                  style={{ width: `${uploadProgress}%` }}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground text-center">
-                {uploadProgress < 100
-                  ? `Uploading... ${uploadProgress}%`
-                  : "Saving lesson..."}
-              </p>
-            </div>
-          )}
         </div>
       )}
+
+      {/* Resources upload (available for both text and video) */}
+      <div className="space-y-2 pt-2 border-t">
+        <p className="text-xs font-medium text-muted-foreground">Resources (Optional)</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <label className="flex items-center gap-2 cursor-pointer border rounded-lg p-2 hover:bg-muted transition-colors">
+            <Upload className="h-4 w-4 text-muted-foreground" />
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-xs font-medium truncate">Learning Document</span>
+              <span className="text-[10px] text-muted-foreground truncate">
+                {documentFile ? documentFile.name : "Choose file (PDF, DOCX)"}
+              </span>
+            </div>
+            <input
+              type="file"
+              className="hidden"
+              onChange={(e) => setDocumentFile(e.target.files?.[0] ?? null)}
+            />
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer border rounded-lg p-2 hover:bg-muted transition-colors">
+            <Upload className="h-4 w-4 text-muted-foreground" />
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-xs font-medium truncate">Video Transcript</span>
+              <span className="text-[10px] text-muted-foreground truncate">
+                {transcriptFile ? transcriptFile.name : "Choose file (PDF, TXT)"}
+              </span>
+            </div>
+            <input
+              type="file"
+              className="hidden"
+              onChange={(e) => setTranscriptFile(e.target.files?.[0] ?? null)}
+            />
+          </label>
+        </div>
+      </div>
+
+      {saving && uploadProgress > 0 && (
+        <div className="space-y-1">
+          <div className="w-full bg-muted rounded-full h-2">
+            <div
+              className="bg-primary h-2 rounded-full transition-all"
+              style={{ width: `${uploadProgress}%` }}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground text-center">
+            {uploadProgress < 100
+              ? `Uploading... ${uploadProgress}%`
+              : "Saving lesson..."}
+          </p>
+        </div>
+      )}
+
       <div className="flex gap-2">
         <Button size="sm" onClick={handleSave} disabled={saving}>
           {saving
