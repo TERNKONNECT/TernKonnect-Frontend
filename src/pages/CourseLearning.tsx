@@ -13,6 +13,8 @@ import {
   BookOpenCheck,
   Mic,
   MicOff,
+  FileText,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -105,6 +107,26 @@ const CourseLearning = () => {
   const allLessonsComplete =
     allLessons.length > 0 && completedCount === allLessons.length;
   const hasNoContent = !loading && course && allLessons.length === 0;
+  
+  const [isVideoEnded, setIsVideoEnded] = useState(false);
+  useEffect(() => {
+    setIsVideoEnded(currentLesson?.type !== "video");
+  }, [currentLesson?.id, currentLesson?.type]);
+
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && typeof e.data === "string") {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.event === "infoDelivery" && data.info?.playerState === 0) {
+            setIsVideoEnded(true);
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   // ── Expose video controls globally (same pattern as frontend VideoPlayer) ──
   useEffect(() => {
@@ -647,18 +669,21 @@ const CourseLearning = () => {
                       })}
                       {mod.quizId && (
                         <button
-                          disabled={
-                            !unlocked ||
-                            (!isQuizOnlyModule &&
-                              !mod.lessons.every((l) =>
-                                courseId
-                                  ? isLessonCompleted(courseId, l.id)
-                                  : false,
-                              ))
-                          }
-                          onClick={() =>
-                            navigate(`/learn/${courseId}/quiz/${mod.quizId}`)
-                          }
+                          onClick={() => {
+                            if (!unlocked) {
+                              toast({ title: "Module Locked", description: "Please complete previous modules first.", variant: "destructive" });
+                              return;
+                            }
+                            if (!isQuizOnlyModule && !mod.lessons.every((l) => courseId ? isLessonCompleted(courseId, l.id) : false)) {
+                              toast({ title: "Lessons Incomplete", description: "Please complete all lessons in this module before taking the quiz.", variant: "destructive" });
+                              return;
+                            }
+                            if (mod.quizId) {
+                              navigate(`/learn/${courseId}/quiz/${mod.quizId}`);
+                            } else {
+                              toast({ title: "No Quiz", description: "This module does not have a quiz.", variant: "destructive" });
+                            }
+                          }}
                           className={`w-full text-left flex items-center gap-2 p-2 rounded-md text-xs transition-colors ${unlocked && (isQuizOnlyModule || mod.lessons.every((l) => (courseId ? isLessonCompleted(courseId, l.id) : false))) ? "hover:bg-muted text-primary font-medium" : "opacity-50 cursor-not-allowed"}`}
                         >
                           <Trophy className="h-3.5 w-3.5 shrink-0" />
@@ -722,6 +747,7 @@ const CourseLearning = () => {
                         controls
                         className="w-full aspect-video rounded-xl bg-black"
                         controlsList="nodownload"
+                        onEnded={() => setIsVideoEnded(true)}
                       >
                         Your browser does not support the video tag.
                       </video>
@@ -816,6 +842,39 @@ const CourseLearning = () => {
                 )}
               </div>
 
+              {/* Resources Section */}
+              {(currentLesson.documentUrl || currentLesson.transcriptUrl) && (
+                <div className="pt-4 space-y-3 border-t">
+                  <h3 className="text-lg font-semibold">Resources</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {currentLesson.documentUrl && (
+                      <a
+                        href={currentLesson.documentUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium hover:bg-muted transition-colors"
+                      >
+                        <FileText className="h-4 w-4 text-blue-500" />
+                        Learning Document
+                        <Download className="h-3.5 w-3.5 ml-1 text-muted-foreground" />
+                      </a>
+                    )}
+                    {currentLesson.transcriptUrl && (
+                      <a
+                        href={currentLesson.transcriptUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium hover:bg-muted transition-colors"
+                      >
+                        <FileText className="h-4 w-4 text-emerald-500" />
+                        Video Transcript
+                        <Download className="h-3.5 w-3.5 ml-1 text-muted-foreground" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center justify-between pt-4 border-t">
                 <Button
                   variant="outline"
@@ -832,6 +891,7 @@ const CourseLearning = () => {
                   <Button
                     className="gradient-primary border-0 text-white gap-2"
                     onClick={handleMarkComplete}
+                    disabled={!isVideoEnded}
                   >
                     <CheckCircle2 className="h-4 w-4" /> Mark as Complete
                   </Button>

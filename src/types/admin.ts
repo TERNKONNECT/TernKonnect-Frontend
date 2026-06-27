@@ -66,6 +66,21 @@ export interface AdminCourse {
   };
 }
 
+export interface AdminLesson {
+  id: string;
+  moduleId: string;
+  title: string;
+  type: "video" | "text";
+  content?: string;
+  videoUrl?: string;
+  duration?: string;
+  order: number;
+  documentUrl?: string;
+  transcriptUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CourseWithStats {
   id: string;
   title: string;
