@@ -136,11 +136,26 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
   completeLesson: (courseId, lessonId) => {
     if (get().isLessonCompleted(courseId, lessonId)) return;
 
-    const updated = get().enrolledCourses.map((c) =>
-      c.courseId === courseId
-        ? { ...c, completedLessons: [...c.completedLessons, lessonId] }
-        : c,
-    );
+    let found = false;
+    const updated = get().enrolledCourses.map((c) => {
+      if (c.courseId === courseId) {
+        found = true;
+        return { ...c, completedLessons: [...c.completedLessons, lessonId] };
+      }
+      return c;
+    });
+
+    if (!found) {
+      updated.push({
+        courseId,
+        enrolledAt: new Date().toISOString(),
+        completedLessons: [lessonId],
+        completedModules: [],
+        quizAttempts: [],
+        isCompleted: false,
+      });
+    }
+
     set({ enrolledCourses: updated });
 
     const uid = get().userId;
@@ -161,11 +176,27 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
 
   completeModule: (courseId, moduleId) => {
     if (get().isModuleCompleted(courseId, moduleId)) return;
-    const updated = get().enrolledCourses.map((c) =>
-      c.courseId === courseId
-        ? { ...c, completedModules: [...c.completedModules, moduleId] }
-        : c,
-    );
+
+    let found = false;
+    const updated = get().enrolledCourses.map((c) => {
+      if (c.courseId === courseId) {
+        found = true;
+        return { ...c, completedModules: [...c.completedModules, moduleId] };
+      }
+      return c;
+    });
+
+    if (!found) {
+      updated.push({
+        courseId,
+        enrolledAt: new Date().toISOString(),
+        completedLessons: [],
+        completedModules: [moduleId],
+        quizAttempts: [],
+        isCompleted: false,
+      });
+    }
+
     set({ enrolledCourses: updated });
     const uid = get().userId;
     if (uid) saveToStorage(uid, updated);
