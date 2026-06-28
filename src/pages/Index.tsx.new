@@ -397,7 +397,7 @@ const Index = () => {
         Whether you're looking to build digital skills, access career opportunities, or create more inclusive learning environments — Ternkonnect Digital Inclusive Academy is here to support your journey.
       </p>
       <div className="join-actions">
-        <a href="#learners" className="btn-primary">I'm a Learner →</a>
+        <Link to="/login" className="btn-primary">I'm a Learner →</Link>
         <a href="#educators" className="btn-secondary">I'm an Educator</a>
       </div>
     </div>
