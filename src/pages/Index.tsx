@@ -362,7 +362,7 @@ const Index = () => {
         Whether you're looking to build digital skills, access career opportunities, or create more inclusive learning environments — Ternkonnect Digital Inclusive Academy is here to support your journey.
       </p>
       <div className="join-actions">
-        <Button asChild size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"><a href="#learners">I'm a Learner →</a></Button>
+        <Button asChild size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"><Link to="/login">I'm a Learner →</Link></Button>
         {/* <Button asChild variant="outline" size="lg" className="rounded-full px-8 py-6 text-base font-bold bg-transparent border-2 border-purple-600 text-purple-600 dark:border-purple-400 dark:text-purple-400 hover:bg-purple-600/10 dark:hover:bg-purple-400/10 shadow-md hover:shadow-lg transition-all duration-300"><a href="#educators">I'm an Educator</a></Button> */}
       </div>
     </div>
