@@ -205,6 +205,7 @@ const Login = () => {
       toast({
         title: "Welcome back!",
         description: "You have been logged in successfully.",
+        duration: 1000,
       });
       if (user.role === "admin" || user.role === "super-admin") {
         navigate("/dashboard");
