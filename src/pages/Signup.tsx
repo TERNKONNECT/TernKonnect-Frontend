@@ -285,7 +285,7 @@ const Signup = () => {
         title: "Check your email",
         description: message,
       });
-      navigate("/login");
+      navigate(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
       toast({
         title: "Error",

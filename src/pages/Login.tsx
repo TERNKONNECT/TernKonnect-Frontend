@@ -213,6 +213,15 @@ const Login = () => {
         navigate("/");
       }
     } catch (err: any) {
+      if (err.code === "EMAIL_NOT_VERIFIED") {
+        toast({
+          title: "Email not verified",
+          description: "Please verify your email to continue. We've taken you to the verification page.",
+          variant: "destructive",
+        });
+        navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+        return;
+      }
       toast({
         title: "Error",
         description: err.message || "Invalid credentials.",

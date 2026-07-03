@@ -33,7 +33,11 @@ export const useAuthStore = create<AuthState>()(
         });
 
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Login failed");
+        if (!res.ok) {
+          const error = new Error(data.error || "Login failed") as Error & { code?: string };
+          error.code = data.code;
+          throw error;
+        }
 
         const user: User = {
           id: data.user._id ?? data.user.id,
