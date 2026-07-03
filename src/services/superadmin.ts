@@ -67,7 +67,7 @@ export const superAdminApi = {
   inviteInstructor: async (
     name: string,
     email: string,
-    role: "admin" | "operator" = "admin"
+    role: "admin" | "operator" | "super-admin" = "admin"
   ): Promise<{ message: string; instructor: InstructorSummary }> => {
     const res = await fetch(`${API_URL}/api/superadmin/instructors/invite`, {
       method: "POST",
