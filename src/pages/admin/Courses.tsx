@@ -75,13 +75,11 @@ const Courses = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">Courses</h1>
-        {!isSuperAdmin && (
-          <Button asChild>
-            <Link to="/dashboard/courses/new">
-              <Plus className="mr-2 h-4 w-4" /> New Course
-            </Link>
-          </Button>
-        )}
+        <Button asChild>
+          <Link to="/dashboard/courses/new">
+            <Plus className="mr-2 h-4 w-4" /> New Course
+          </Link>
+        </Button>
       </div>
 
       <Card>
@@ -116,19 +114,13 @@ const Courses = () => {
           ) : !filtered.length ? (
             <EmptyState
               title="No courses found"
-              description={
-                isSuperAdmin
-                  ? "No courses have been created yet."
-                  : "Create your first course"
-              }
+              description="Create your first course"
               action={
-                !isSuperAdmin ? (
-                  <Button asChild>
-                    <Link to="/dashboard/courses/new">
-                      <Plus className="mr-2 h-4 w-4" /> New Course
-                    </Link>
-                  </Button>
-                ) : undefined
+                <Button asChild>
+                  <Link to="/dashboard/courses/new">
+                    <Plus className="mr-2 h-4 w-4" /> New Course
+                  </Link>
+                </Button>
               }
             />
           ) : (
@@ -212,16 +204,14 @@ const Courses = () => {
                               <Pencil className="h-4 w-4" />
                             </Link>
                           </Button>
-                          {!isSuperAdmin && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => setDeleteId(cid)}
-                              title="Delete course"
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteId(cid)}
+                            title="Delete course"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>

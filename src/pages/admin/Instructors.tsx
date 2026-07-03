@@ -48,7 +48,7 @@ const Instructors = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<"admin" | "operator">("admin");
+  const [inviteRole, setInviteRole] = useState<"admin" | "operator" | "super-admin">("admin");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const Instructors = () => {
       const result = await superAdminApi.inviteInstructor(
         inviteName.trim(),
         inviteEmail.trim(),
-        inviteRole
+        inviteRole as "admin" | "operator" | "super-admin"
       );
       setInstructors((current) => {
         const withoutExisting = current.filter(
@@ -165,8 +165,9 @@ const Instructors = () => {
                     <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="admin">Admin (Instructor)</SelectItem>
                     <SelectItem value="operator">Operator (No Finances)</SelectItem>
+                    <SelectItem value="super-admin">Super Admin</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
