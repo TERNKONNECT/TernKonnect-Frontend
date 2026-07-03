@@ -49,6 +49,7 @@ import CourseBuilder from "./pages/admin/CourseBuilder";
 import CourseEnrollments from "./pages/admin/CourseEnrollments";
 import Users from "./pages/admin/Users";
 import Analytics from "./pages/admin/Analytics";
+import Revenue from "./pages/admin/Revenue";
 import Instructors from "./pages/admin/Instructors";
 import InstructorDetail from "./pages/admin/InstructorDetail";
 import AdminProfile from "./pages/admin/AdminProfile";
@@ -161,6 +162,7 @@ const App = () => (
               />
               <Route path="users" element={<Users />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="revenue" element={<Revenue />} />
               <Route
                 path="instructors"
                 element={

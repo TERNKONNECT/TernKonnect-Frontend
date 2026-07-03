@@ -8,6 +8,7 @@ import {
   UserCircle,
   GraduationCap,
   BookOpenCheck,
+  Wallet,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -33,6 +34,7 @@ const adminNavItems = [
   { title: "Quizzes", url: "/dashboard/quizzes", icon: BookOpenCheck },
   { title: "Users", url: "/dashboard/users", icon: Users },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
+  { title: "Revenue", url: "/dashboard/revenue", icon: Wallet },
 ];
 
 const superAdminNavItems = [
@@ -43,6 +45,7 @@ const superAdminNavItems = [
   { title: "Quizzes", url: "/dashboard/quizzes", icon: BookOpenCheck },
   { title: "Users", url: "/dashboard/users", icon: Users },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
+  { title: "Revenue", url: "/dashboard/revenue", icon: Wallet },
 ];
 
 const secondaryItems = [
