@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import VerifyEmail from "./pages/VerifyEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminInvite from "./pages/AdminInvite";
+import StudentInvite from "./pages/StudentInvite";
 import InstructorSignup from "./pages/InstructorSignup";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
@@ -82,6 +83,7 @@ const App = () => (
             <Route path="/instructor-signup" element={<InstructorSignup />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/admin-invite" element={<AdminInvite />} />
+            <Route path="/student-invite" element={<StudentInvite />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

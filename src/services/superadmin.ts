@@ -81,4 +81,34 @@ export const superAdminApi = {
     if (!res.ok) throw new Error(data.error || "Failed to invite instructor");
     return data;
   },
+
+  verifyStudentInvite: async (
+    token: string,
+    email: string,
+  ): Promise<{ name: string; email: string; expiresAt: string }> => {
+    const params = new URLSearchParams({ token, email });
+    const res = await fetch(`${API_URL}/api/auth/student-invite?${params}`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || "Invalid or expired invitation link");
+    }
+    return data;
+  },
+
+  acceptStudentInvite: async (
+    token: string,
+    email: string,
+    password: string,
+  ): Promise<{ message: string; token: string; user: User }> => {
+    const res = await fetch(`${API_URL}/api/auth/student-invite/accept`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, email, password }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to accept invitation");
+    }
+    return data;
+  },
 };

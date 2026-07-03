@@ -17,6 +17,14 @@ const authHeaders = () => ({
   Authorization: `Bearer ${getToken()}`,
 });
 
+/** Clear stale auth state and redirect to login when the token is expired/invalid. */
+const handleUnauthorized = () => {
+  localStorage.removeItem("lms_token");
+  localStorage.removeItem("lms_user");
+  localStorage.removeItem("lms-auth");
+  window.location.href = "/login";
+};
+
 const storageKey = (userId: string) => `lms-enrollment-${userId}`;
 
 const loadFromStorage = (userId: string): EnrolledCourse[] => {
@@ -71,6 +79,7 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
       const res = await fetch(`${API_URL}/api/enrollments/my`, {
         headers: authHeaders(),
       });
+      if (res.status === 401) { handleUnauthorized(); return; }
       if (!res.ok) return;
       const data = await res.json();
       const serverCourses: EnrolledCourse[] = data.map((item: any) => ({
@@ -109,6 +118,7 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
       method: "POST",
       headers: authHeaders(),
     });
+    if (res.status === 401) { handleUnauthorized(); return; }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       throw new Error(data.error || "Failed to enroll");
