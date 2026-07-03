@@ -3,7 +3,9 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   enrollmentsApi,
   type CourseEnrollmentsResponse,
+  type EnrollmentSourceFilter,
 } from "@/api/enrollments";
+import { paymentsApi, type PendingPayment } from "@/api/payments";
 import { reviewsApi, type ReviewsResponse } from "@/api/reviews";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +22,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -41,10 +50,12 @@ import {
   Star,
   UserPlus,
   Loader2,
+  ShieldCheck,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 
-type Tab = "students" | "reviews";
+type Tab = "students" | "payments" | "reviews";
 
 const StarRating = ({ rating }: { rating: number }) => (
   <div className="flex items-center gap-0.5">
@@ -66,34 +77,51 @@ const CourseEnrollments = () => {
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<Tab>("students");
+  const [sourceFilter, setSourceFilter] = useState<EnrollmentSourceFilter>("all");
   const [enrollDialogOpen, setEnrollDialogOpen] = useState(false);
   const [enrollEmail, setEnrollEmail] = useState("");
   const [enrolling, setEnrolling] = useState(false);
 
+  // Pending payments tab state
+  const [pending, setPending] = useState<PendingPayment[]>([]);
+  const [pendingLoading, setPendingLoading] = useState(true);
+  const [verifyingRef, setVerifyingRef] = useState<string | null>(null);
+
+  const refreshEnrollments = (source: EnrollmentSourceFilter = sourceFilter) => {
+    if (!id) return;
+    setLoading(true);
+    enrollmentsApi
+      .getCourseEnrollments(id, source)
+      .then(setData)
+      .catch(() => toast.error("Failed to reload enrollments"))
+      .finally(() => setLoading(false));
+  };
+
+  const loadPending = () => {
+    if (!id) return;
+    setPendingLoading(true);
+    paymentsApi
+      .getPendingForCourse(id)
+      .then(setPending)
+      .catch(() => toast.error("Failed to load pending payments"))
+      .finally(() => setPendingLoading(false));
+  };
+
   useEffect(() => {
     if (!id) return;
-    enrollmentsApi
-      .getCourseEnrollments(id)
-      .then(setData)
-      .catch(() => toast.error("Failed to load enrollments"))
-      .finally(() => setLoading(false));
-
+    loadPending();
     reviewsApi
       .getCourseReviews(id)
       .then(setReviews)
       .catch(() => {})
       .finally(() => setReviewsLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const refreshEnrollments = () => {
-    if (!id) return;
-    setLoading(true);
-    enrollmentsApi
-      .getCourseEnrollments(id)
-      .then(setData)
-      .catch(() => toast.error("Failed to reload enrollments"))
-      .finally(() => setLoading(false));
-  };
+  useEffect(() => {
+    refreshEnrollments(sourceFilter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, sourceFilter]);
 
   const handleEnrollByEmail = async () => {
     if (!id || !enrollEmail.trim()) return;
@@ -109,6 +137,27 @@ const CourseEnrollments = () => {
       toast.error(msg);
     } finally {
       setEnrolling(false);
+    }
+  };
+
+  const handleVerifyPayment = async (payment: PendingPayment) => {
+    setVerifyingRef(payment.reference);
+    try {
+      const result = await paymentsApi.verifyPayment(payment.reference);
+      if (result.status === "success") {
+        toast.success(`${payment.user.name}'s payment verified — enrolled successfully.`);
+        refreshEnrollments();
+        loadPending();
+      } else if (result.status === "pending") {
+        toast.info(result.error || "Payment is still processing on Paystack's side.");
+      } else {
+        toast.error(result.error || "Payment was not successful.");
+        loadPending();
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error || err?.message || "Failed to verify payment");
+    } finally {
+      setVerifyingRef(null);
     }
   };
 
@@ -233,6 +282,18 @@ const CourseEnrollments = () => {
         >
           Students ({data?.totalEnrolled ?? 0})
         </button>
+        {data?.course.pricingType === "paid" && (
+          <button
+            onClick={() => setTab("payments")}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              tab === "payments"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Pending Payments ({pending.length})
+          </button>
+        )}
         <button
           onClick={() => setTab("reviews")}
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
@@ -249,14 +310,29 @@ const CourseEnrollments = () => {
       {tab === "students" && (
         <Card>
           <CardContent className="p-4">
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search students..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
-              />
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search students..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <Select
+                value={sourceFilter}
+                onValueChange={(v) => setSourceFilter(v as EnrollmentSourceFilter)}
+              >
+                <SelectTrigger className="sm:w-48">
+                  <SelectValue placeholder="All students" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All students</SelectItem>
+                  <SelectItem value="self">Self-enrolled</SelectItem>
+                  <SelectItem value="admin">Enrolled by admin</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {loading ? (
@@ -272,6 +348,7 @@ const CourseEnrollments = () => {
                   <TableRow>
                     <TableHead>Student</TableHead>
                     <TableHead>Enrolled</TableHead>
+                    <TableHead>Enrolled By</TableHead>
                     <TableHead>Progress</TableHead>
                     <TableHead>Lessons</TableHead>
                     <TableHead>Status</TableHead>
@@ -293,6 +370,16 @@ const CourseEnrollments = () => {
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {new Date(student.enrolledAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        {student.enrolledByAdmin ? (
+                          <Badge variant="outline" className="gap-1 text-blue-600 border-blue-200 bg-blue-50">
+                            <ShieldCheck className="h-3 w-3" />
+                            {student.enrolledByAdmin.name}
+                          </Badge>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Self-enrolled</span>
+                        )}
                       </TableCell>
                       <TableCell className="min-w-[140px]">
                         <div className="space-y-1">
@@ -336,6 +423,81 @@ const CourseEnrollments = () => {
                         {student.completedAt
                           ? new Date(student.completedAt).toLocaleDateString()
                           : "—"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pending Payments tab */}
+      {tab === "payments" && (
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              These students started checkout but we never received Paystack's
+              confirmation (usually a missed webhook). Verify to check the real
+              status with Paystack and complete their enrollment if it actually
+              succeeded.
+            </p>
+            {pendingLoading ? (
+              <TableSkeleton />
+            ) : !pending.length ? (
+              <EmptyState
+                title="No pending payments"
+                description="Every payment for this course has been confirmed one way or another."
+              />
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Reference</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Initiated</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {pending.map((p) => (
+                    <TableRow key={p.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium text-sm">{p.user.name}</p>
+                          <p className="text-xs text-muted-foreground">{p.user.email}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground font-mono">
+                        {p.reference}
+                      </TableCell>
+                      <TableCell className="text-sm font-medium">
+                        {new Intl.NumberFormat("en-NG", {
+                          style: "currency",
+                          currency: p.currency || "NGN",
+                          minimumFractionDigits: 0,
+                        }).format(p.amount)}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {new Date(p.createdAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={verifyingRef === p.reference}
+                          onClick={() => handleVerifyPayment(p)}
+                          className="gap-1.5"
+                        >
+                          {verifyingRef === p.reference ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <RefreshCw className="h-3.5 w-3.5" />
+                          )}
+                          Verify Now
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
