@@ -12,7 +12,7 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<User>;
-  signup: (name: string, email: string, password: string, userType: "learner" | "educator") => Promise<boolean>;
+  signup: (name: string, email: string, password: string, userType: "learner" | "educator") => Promise<string>;
   instructorSignup: (name: string, email: string, password: string) => Promise<string>;
   logout: () => void;
   setUser: (user: User) => void;
@@ -66,25 +66,30 @@ export const useAuthStore = create<AuthState>()(
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Signup failed");
 
-        const user: User = {
-          id: data.user._id ?? data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${data.user.name}`,
-          joinedAt: data.user.createdAt,
-          role: data.user.role || "user",
-          userType: data.user.userType || "learner",
-        };
+        // The backend requires email verification before login,
+        // so it only returns a message — no user/token.
+        // If the backend does return a user+token (e.g. email verification
+        // is disabled), go ahead and auto-login.
+        if (data.user && data.token) {
+          const user: User = {
+            id: data.user._id ?? data.user.id,
+            name: data.user.name,
+            email: data.user.email,
+            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${data.user.name}`,
+            joinedAt: data.user.createdAt,
+            role: data.user.role || "user",
+            userType: data.user.userType || "learner",
+          };
 
-        set({ user, token: data.token, isAuthenticated: true });
-        localStorage.setItem("lms_token", data.token);
-        localStorage.setItem("lms_user", JSON.stringify(user));
+          set({ user, token: data.token, isAuthenticated: true });
+          localStorage.setItem("lms_token", data.token);
+          localStorage.setItem("lms_user", JSON.stringify(user));
 
-        // New user — initialize with empty enrollments
-        const { useEnrollmentStore } = await import("./enrollmentStore");
-        useEnrollmentStore.getState().initForUser(user.id);
+          const { useEnrollmentStore } = await import("./enrollmentStore");
+          useEnrollmentStore.getState().initForUser(user.id);
+        }
 
-        return true;
+        return data.message || "Account created. Check your email to verify your account.";
       },
 
       instructorSignup: async (name: string, email: string, password: string) => {

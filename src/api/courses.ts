@@ -40,7 +40,7 @@ const uploadToSignedUrl = (
 
 export const coursesApi = {
   getAll: () =>
-    api.get<CourseListResponse>("/api/courses").then((r) => unwrapCourseList(r.data)),
+    api.get<CourseListResponse>("/api/courses", { params: { scope: "admin" } }).then((r) => unwrapCourseList(r.data)),
 
   getById: (id: string) =>
     api.get<AdminCourse>(`/api/courses/${id}`).then((r) => r.data),
