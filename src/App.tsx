@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CertificatePage from "./pages/CertificatePage";
 
 import {
   ProtectedAdminRoute,
@@ -91,6 +92,7 @@ const App = () => (
             <Route path="/courses/:id" element={<CourseDetail />} />
             <Route path="/get" element={<GetStarted />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/verify/:certificateId" element={<CertificatePage />} />
             <Route
               path="/payment/success"
               element={

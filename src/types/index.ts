@@ -108,6 +108,7 @@ export interface EnrolledCourse {
   quizAttempts: QuizAttempt[];
   isCompleted: boolean;
   completedAt?: string;
+  certificateId?: string;
 }
 
 export interface CourseProgress {
@@ -115,6 +116,7 @@ export interface CourseProgress {
   totalLessons: number;
   completedLessons: number;
   percentage: number;
+  certificateId?: string;
 }
 
 export type Category =
