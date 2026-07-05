@@ -15,6 +15,7 @@ import {
   MicOff,
   FileText,
   Download,
+  Award,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -696,6 +697,33 @@ const CourseLearning = () => {
                   </div>
                 );
               })}
+              {/* Certificate Module (Mock module at the end) */}
+              {enrollment?.certificateId && (
+                <div className="mt-6 border-t pt-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-primary">
+                      Certificate
+                    </h3>
+                  </div>
+                  <div className="ml-6 space-y-0.5">
+                    <button
+                      onClick={() => {
+                        setCurrentLessonId("certificate");
+                        if (window.innerWidth < 768) setSidebarOpen(false);
+                      }}
+                      className={`w-full text-left flex items-center gap-2 p-2 rounded-md text-xs transition-colors ${
+                        currentLessonId === "certificate"
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "hover:bg-muted"
+                      }`}
+                    >
+                      <Award className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate flex-1">Your Certificate</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </aside>
         )}
@@ -721,6 +749,26 @@ const CourseLearning = () => {
                   </Link>
                   <Link to="/courses">
                     <Button variant="outline">Explore Academy</Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ) : currentLessonId === "certificate" && enrollment?.certificateId ? (
+            <div className="flex items-center justify-center min-h-full p-8">
+              <div className="text-center space-y-6 max-w-2xl bg-white shadow-xl rounded-2xl p-10 border">
+                <div className="h-20 w-20 rounded-full bg-indigo-50 flex items-center justify-center mx-auto">
+                  <Award className="h-10 w-10 text-indigo-500" />
+                </div>
+                <h2 className="text-3xl font-bold">Your Certificate is Ready!</h2>
+                <p className="text-muted-foreground text-lg">
+                  Congratulations on completing <strong>{course.title}</strong>. Your official certificate has been issued and is available to view, print, or share.
+                </p>
+                <div className="pt-6 flex justify-center">
+                  <Link to={`/verify/${enrollment.certificateId}`} target="_blank">
+                    <Button size="lg" className="gap-2">
+                      <Award className="h-5 w-5" />
+                      View Official Certificate
+                    </Button>
                   </Link>
                 </div>
               </div>
@@ -982,9 +1030,15 @@ const CourseLearning = () => {
                   <Link to="/my-learning">
                     <Button variant="outline">My Learning</Button>
                   </Link>
-                  {/* <Link to="/courses">
-                    <Button variant="outline">Explore Academy</Button>
-                  </Link> */}
+                  {enrollment?.certificateId && (
+                    <Button
+                      className="gradient-primary border-0 text-white"
+                      onClick={() => setCurrentLessonId("certificate")}
+                    >
+                      <Award className="h-4 w-4 mr-2" />
+                      Claim Certificate
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

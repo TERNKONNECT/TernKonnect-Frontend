@@ -104,14 +104,27 @@ const MyLearning = () => {
                       </div>
                       <Progress value={progress} className="h-2" />
                     </div>
-                    <Link to={`/learn/${course.id}`}>
-                      <Button
-                        size="sm"
-                        className="w-full gradient-primary border-0 text-white"
-                      >
-                        {progress > 0 ? "Continue Learning" : "Start Learning"}
-                      </Button>
-                    </Link>
+                    <div className="flex gap-2">
+                      <Link to={`/learn/${course.id}`} className={enrollment?.certificateId ? "flex-1" : "w-full"}>
+                        <Button
+                          size="sm"
+                          className="w-full gradient-primary border-0 text-white"
+                        >
+                          {progress > 0 ? (progress >= 100 ? "Review Course" : "Continue Learning") : "Start Learning"}
+                        </Button>
+                      </Link>
+                      {enrollment?.certificateId && (
+                        <Link to={`/verify/${enrollment.certificateId}`} className="flex-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full border-primary text-primary hover:bg-primary/10"
+                          >
+                            View Certificate
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               );

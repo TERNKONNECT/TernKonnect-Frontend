@@ -90,6 +90,7 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
         quizAttempts: [],
         isCompleted: Boolean(item.isCompleted),
         completedAt: item.completedAt,
+        certificateId: item.certificateId,
       }));
       const existing = get().enrolledCourses;
       const merged = serverCourses.map((serverCourse) => {
@@ -131,6 +132,7 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
       completedModules: [],
       quizAttempts: [],
       isCompleted: false,
+      certificateId: undefined,
     };
 
     const updated = [...get().enrolledCourses, newCourse];
@@ -163,6 +165,7 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
         completedModules: [],
         quizAttempts: [],
         isCompleted: false,
+        certificateId: undefined,
       });
     }
 
@@ -204,6 +207,7 @@ export const useEnrollmentStore = create<EnrollmentState>()((set, get) => ({
         completedModules: [moduleId],
         quizAttempts: [],
         isCompleted: false,
+        certificateId: undefined,
       });
     }
 
