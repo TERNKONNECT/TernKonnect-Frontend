@@ -19,6 +19,17 @@ const authHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+const _fetch = window.fetch;
+const fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+  const res = await _fetch(input, init);
+  if (res.status === 401) {
+    localStorage.removeItem("lms-auth");
+    localStorage.removeItem("lms_token");
+    window.location.href = "/login";
+  }
+  return res;
+};
+
 const mapLesson = (l: any, idx: number): Lesson => ({
   id: l.id,
   moduleId: l.moduleId,
