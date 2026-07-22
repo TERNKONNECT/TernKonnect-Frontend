@@ -114,6 +114,11 @@ const CourseLearning = () => {
     setIsVideoEnded(currentLesson?.type !== "video");
   }, [currentLesson?.id, currentLesson?.type]);
 
+  const [videoStarted, setVideoStarted] = useState(false);
+  useEffect(() => {
+    setVideoStarted(false);
+  }, [currentLesson?.id]);
+
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
       if (e.data && typeof e.data === "string") {
@@ -776,13 +781,31 @@ const CourseLearning = () => {
           ) : currentLesson ? (
             <div className="p-6 max-w-4xl mx-auto space-y-6">
               {currentLesson.type === "video" && currentLesson.videoUrl
-                ? (() => {
+                ? !videoStarted ? (
+                    <button
+                      type="button"
+                      onClick={() => setVideoStarted(true)}
+                      className="relative group overflow-hidden w-full aspect-video rounded-xl bg-black flex items-center justify-center"
+                      aria-label={`Play ${currentLesson.title}`}
+                    >
+                      {course.thumbnail && (
+                        <img
+                          src={course.thumbnail}
+                          alt=""
+                          className="absolute inset-0 h-full w-full object-cover opacity-80 group-hover:opacity-60 transition-opacity"
+                        />
+                      )}
+                      <span className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white/90 group-hover:bg-white transition-colors">
+                        <Play className="h-7 w-7 text-black fill-black translate-x-0.5" />
+                      </span>
+                    </button>
+                  ) : (() => {
                     const embedUrl = getYoutubeEmbedUrl(currentLesson.videoUrl);
                     return embedUrl ? (
                       <iframe
                         ref={iframeRef}
                         key={currentLesson.id}
-                        src={`${embedUrl}?enablejsapi=1`}
+                        src={`${embedUrl}?enablejsapi=1&autoplay=1`}
                         className="w-full aspect-video rounded-xl"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
@@ -793,6 +816,7 @@ const CourseLearning = () => {
                         key={currentLesson.id}
                         src={currentLesson.videoUrl}
                         controls
+                        autoPlay
                         className="w-full aspect-video rounded-xl bg-black"
                         controlsList="nodownload"
                         onEnded={() => setIsVideoEnded(true)}
